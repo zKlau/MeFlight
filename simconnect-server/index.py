@@ -1,7 +1,10 @@
 from flask import Flask, jsonify
+from flask_cors import CORS, cross_origin
 from SimConnect import *
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 sm = SimConnect()
 ae = AircraftEvents(sm)
@@ -10,7 +13,7 @@ aq = AircraftRequests(sm, _time=10)
 def thousandify(x):
 	return f"{x:,}"
 
-@app.route('/ui')
+@app.route('/live')
 def output_ui_variables():
 
 	ui_friendly_dictionary = {}
