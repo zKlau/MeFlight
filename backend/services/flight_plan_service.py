@@ -123,6 +123,8 @@ def add_flight_plan_telemetry(
 ) -> FlightTelemetry:
     get_flight_plan_or_404(session, flightplan_id)
     telemetry.flightplan_id = flightplan_id
+    if not telemetry.status:
+        telemetry.status = "success"
     session.add(telemetry)
     session.commit()
     session.refresh(telemetry)

@@ -32,4 +32,6 @@ export type AircraftTelemetry = {
   RUDDER_TRIM_PCT: number;
   STATUS: "success" | (string & {});
   VERTICAL_SPEED: number;
+  FLIGHTPLAN_ID?: string | null;
+  created_at?: string;
 };

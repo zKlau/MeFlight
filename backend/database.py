@@ -16,4 +16,3 @@ def init_db() -> None:
 def get_session():
     with Session(engine) as session:
         yield session
-        yield session

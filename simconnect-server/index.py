@@ -1,67 +1,123 @@
-from flask import Flask, jsonify
-from flask_cors import CORS, cross_origin
-from SimConnect import *
+import json
+import os
+import sys
+import time
+import urllib.error
+import urllib.request
+from pathlib import Path
+from dotenv import load_dotenv
 
-app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path=env_path)
 
-sm = SimConnect()
-ae = AircraftEvents(sm)
-aq = AircraftRequests(sm, _time=10)
+API_ENDPOINT = os.getenv("API_ENDPOINT", "http://localhost:8000/live")
+API_KEY = os.getenv("API_KEY")
+INTERVAL = float(os.getenv("INTERVAL", "1.0"))
+FLIGHTPLAN_ID = os.getenv("FLIGHTPLAN_ID") or None
 
 def thousandify(x):
-	return f"{x:,}"
+    return f"{x:,}"
 
-@app.route('/live')
-def output_ui_variables():
+def extract_telemetry(aq):
+    fuel_total = aq.get("FUEL_TOTAL_QUANTITY")
+    fuel_capacity = aq.get("FUEL_TOTAL_CAPACITY")
+    fuel_pct = 0
+    if fuel_total is not None and fuel_capacity and fuel_capacity > 0:
+        fuel_pct = round((fuel_total / fuel_capacity) * 100)
 
-	ui_friendly_dictionary = {}
-	ui_friendly_dictionary["STATUS"] = "success"
+    gear_pos = "DOWN" if aq.get("GEAR_HANDLE_POSITION") == 1 else "UP"
 
-	fuel_percentage = (aq.get("FUEL_TOTAL_QUANTITY") / aq.get("FUEL_TOTAL_CAPACITY")) * 100
-	ui_friendly_dictionary["FUEL_PERCENTAGE"] = round(fuel_percentage)
+    data = {
+        "STATUS": "success",
+        "FUEL_PERCENTAGE": fuel_pct,
+        "AIRSPEED_INDICATE": round(aq.get("AIRSPEED_INDICATED") or 0),
+        "ALTITUDE": thousandify(round(aq.get("PLANE_ALTITUDE") or 0)),
+        "GEAR_HANDLE_POSITION": gear_pos,
+        "FLAPS_HANDLE_PERCENT": round((aq.get("FLAPS_HANDLE_PERCENT") or 0) * 100),
+        "ELEVATOR_TRIM_PCT": round((aq.get("ELEVATOR_TRIM_PCT") or 0) * 100),
+        "RUDDER_TRIM_PCT": round((aq.get("RUDDER_TRIM_PCT") or 0) * 100),
+        "LATITUDE": float(aq.get("PLANE_LATITUDE") or 0.0),
+        "LONGITUDE": float(aq.get("PLANE_LONGITUDE") or 0.0),
+        "MAGNETIC_COMPASS": round(aq.get("MAGNETIC_COMPASS") or 0),
+        "MAGVAR": round(aq.get("MAGVAR") or 0),
+        "VERTICAL_SPEED": round(aq.get("VERTICAL_SPEED") or 0),
+        "AUTOPILOT_MASTER": float(aq.get("AUTOPILOT_MASTER") or 0),
+        "AUTOPILOT_NAV_SELECTED": float(aq.get("AUTOPILOT_NAV_SELECTED") or 0),
+        "AUTOPILOT_WING_LEVELER": float(aq.get("AUTOPILOT_WING_LEVELER") or 0),
+        "AUTOPILOT_HEADING_LOCK": float(aq.get("AUTOPILOT_HEADING_LOCK") or 0),
+        "AUTOPILOT_HEADING_LOCK_DIR": round(aq.get("AUTOPILOT_HEADING_LOCK_DIR") or 0),
+        "AUTOPILOT_ALTITUDE_LOCK": float(aq.get("AUTOPILOT_ALTITUDE_LOCK") or 0),
+        "AUTOPILOT_ALTITUDE_LOCK_VAR": thousandify(round(aq.get("AUTOPILOT_ALTITUDE_LOCK_VAR") or 0)),
+        "AUTOPILOT_ATTITUDE_HOLD": float(aq.get("AUTOPILOT_ATTITUDE_HOLD") or 0),
+        "AUTOPILOT_GLIDESLOPE_HOLD": float(aq.get("AUTOPILOT_GLIDESLOPE_HOLD") or 0),
+        "AUTOPILOT_APPROACH_HOLD": float(aq.get("AUTOPILOT_APPROACH_HOLD") or 0),
+        "AUTOPILOT_BACKCOURSE_HOLD": float(aq.get("AUTOPILOT_BACKCOURSE_HOLD") or 0),
+        "AUTOPILOT_VERTICAL_HOLD": float(aq.get("AUTOPILOT_VERTICAL_HOLD") or 0),
+        "AUTOPILOT_VERTICAL_HOLD_VAR": float(aq.get("AUTOPILOT_VERTICAL_HOLD_VAR") or 0),
+        "AUTOPILOT_PITCH_HOLD": float(aq.get("AUTOPILOT_PITCH_HOLD") or 0),
+        "AUTOPILOT_PITCH_HOLD_REF": float(aq.get("AUTOPILOT_PITCH_HOLD_REF") or 0),
+        "AUTOPILOT_FLIGHT_DIRECTOR_ACTIVE": float(aq.get("AUTOPILOT_FLIGHT_DIRECTOR_ACTIVE") or 0),
+        "AUTOPILOT_AIRSPEED_HOLD": float(aq.get("AUTOPILOT_AIRSPEED_HOLD") or 0),
+        "AUTOPILOT_AIRSPEED_HOLD_VAR": round(aq.get("AUTOPILOT_AIRSPEED_HOLD_VAR") or 0),
+        "CABIN_SEATBELTS_ALERT_SWITCH": float(aq.get("CABIN_SEATBELTS_ALERT_SWITCH") or 0),
+        "CABIN_NO_SMOKING_ALERT_SWITCH": float(aq.get("CABIN_NO_SMOKING_ALERT_SWITCH") or 0),
+    }
 
-	ui_friendly_dictionary["AIRSPEED_INDICATE"] = round(aq.get("AIRSPEED_INDICATED"))
-	ui_friendly_dictionary["ALTITUDE"] = thousandify(round(aq.get("PLANE_ALTITUDE")))
+    if FLIGHTPLAN_ID:
+        data["FLIGHTPLAN_ID"] = FLIGHTPLAN_ID
 
-	if aq.get("GEAR_HANDLE_POSITION") == 1:
-		ui_friendly_dictionary["GEAR_HANDLE_POSITION"] = "DOWN"
-	else:
-		ui_friendly_dictionary["GEAR_HANDLE_POSITION"] = "UP"
-	ui_friendly_dictionary["FLAPS_HANDLE_PERCENT"] = round(aq.get("FLAPS_HANDLE_PERCENT") * 100)
+    return data
 
-	ui_friendly_dictionary["ELEVATOR_TRIM_PCT"] = round(aq.get("ELEVATOR_TRIM_PCT") * 100)
-	ui_friendly_dictionary["RUDDER_TRIM_PCT"] = round(aq.get("RUDDER_TRIM_PCT") * 100)
+def post_telemetry(url, data, api_key=None):
+    payload = json.dumps(data).encode("utf-8")
+    headers = {
+        "Content-Type": "application/json",
+        "User-Agent": "MeFlight-SimConnect-Pusher/1.0",
+    }
+    if api_key:
+        headers["X-API-Key"] = api_key
 
-	ui_friendly_dictionary["LATITUDE"] = aq.get("PLANE_LATITUDE")
-	ui_friendly_dictionary["LONGITUDE"] = aq.get("PLANE_LONGITUDE")
-	ui_friendly_dictionary["MAGNETIC_COMPASS"] = round(aq.get("MAGNETIC_COMPASS"))
-	ui_friendly_dictionary["MAGVAR"] = round(aq.get("MAGVAR"))
-	ui_friendly_dictionary["VERTICAL_SPEED"] = round(aq.get("VERTICAL_SPEED"))
+    req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
+    with urllib.request.urlopen(req, timeout=5) as response:
+        return response.status
 
-	ui_friendly_dictionary["AUTOPILOT_MASTER"] = aq.get("AUTOPILOT_MASTER")
-	ui_friendly_dictionary["AUTOPILOT_NAV_SELECTED"] = aq.get("AUTOPILOT_NAV_SELECTED")
-	ui_friendly_dictionary["AUTOPILOT_WING_LEVELER"] = aq.get("AUTOPILOT_WING_LEVELER")
-	ui_friendly_dictionary["AUTOPILOT_HEADING_LOCK"] = aq.get("AUTOPILOT_HEADING_LOCK")
-	ui_friendly_dictionary["AUTOPILOT_HEADING_LOCK_DIR"] = round(aq.get("AUTOPILOT_HEADING_LOCK_DIR"))
-	ui_friendly_dictionary["AUTOPILOT_ALTITUDE_LOCK"] = aq.get("AUTOPILOT_ALTITUDE_LOCK")
-	ui_friendly_dictionary["AUTOPILOT_ALTITUDE_LOCK_VAR"] = thousandify(round(aq.get("AUTOPILOT_ALTITUDE_LOCK_VAR")))
-	ui_friendly_dictionary["AUTOPILOT_ATTITUDE_HOLD"] = aq.get("AUTOPILOT_ATTITUDE_HOLD")
-	ui_friendly_dictionary["AUTOPILOT_GLIDESLOPE_HOLD"] = aq.get("AUTOPILOT_GLIDESLOPE_HOLD")
-	ui_friendly_dictionary["AUTOPILOT_APPROACH_HOLD"] = aq.get("AUTOPILOT_APPROACH_HOLD")
-	ui_friendly_dictionary["AUTOPILOT_BACKCOURSE_HOLD"] = aq.get("AUTOPILOT_BACKCOURSE_HOLD")
-	ui_friendly_dictionary["AUTOPILOT_VERTICAL_HOLD"] = aq.get("AUTOPILOT_VERTICAL_HOLD")
-	ui_friendly_dictionary["AUTOPILOT_VERTICAL_HOLD_VAR"] = aq.get("AUTOPILOT_VERTICAL_HOLD_VAR")
-	ui_friendly_dictionary["AUTOPILOT_PITCH_HOLD"] = aq.get("AUTOPILOT_PITCH_HOLD")
-	ui_friendly_dictionary["AUTOPILOT_PITCH_HOLD_REF"] = aq.get("AUTOPILOT_PITCH_HOLD_REF")
-	ui_friendly_dictionary["AUTOPILOT_FLIGHT_DIRECTOR_ACTIVE"] = aq.get("AUTOPILOT_FLIGHT_DIRECTOR_ACTIVE")
-	ui_friendly_dictionary["AUTOPILOT_AIRSPEED_HOLD"] = aq.get("AUTOPILOT_AIRSPEED_HOLD")
-	ui_friendly_dictionary["AUTOPILOT_AIRSPEED_HOLD_VAR"] = round(aq.get("AUTOPILOT_AIRSPEED_HOLD_VAR"))
+def run_pusher():
+    from SimConnect import SimConnect, AircraftRequests
 
-	ui_friendly_dictionary["CABIN_SEATBELTS_ALERT_SWITCH"] = aq.get("CABIN_SEATBELTS_ALERT_SWITCH")
-	ui_friendly_dictionary["CABIN_NO_SMOKING_ALERT_SWITCH"] = aq.get("CABIN_NO_SMOKING_ALERT_SWITCH")
+    print("Connecting to MSFS SimConnect...", flush=True)
+    sm = None
+    aq = None
 
-	return jsonify(ui_friendly_dictionary)
+    while sm is None:
+        try:
+            sm = SimConnect()
+            aq = AircraftRequests(sm, _time=10)
+            print("Connected to MSFS SimConnect.", flush=True)
+        except Exception as e:
+            print(f"Waiting for MSFS SimConnect connection: {e}", flush=True)
+            time.sleep(3)
 
-app.run(host='0.0.0.0', port=5000, debug=True)
+    print(f"Starting telemetry push to {API_ENDPOINT} every {INTERVAL}s...", flush=True)
+    while True:
+        try:
+            telemetry_data = extract_telemetry(aq)
+            status_code = post_telemetry(API_ENDPOINT, telemetry_data, API_KEY)
+            lat = telemetry_data.get("LATITUDE")
+            lon = telemetry_data.get("LONGITUDE")
+            alt = telemetry_data.get("ALTITUDE")
+            print(f"Pushed telemetry -> HTTP {status_code} | Pos: ({lat:.4f}, {lon:.4f}) | Alt: {alt}", flush=True)
+        except urllib.error.HTTPError as e:
+            print(f"HTTP error pushing telemetry: {e.code} {e.reason}", flush=True)
+        except urllib.error.URLError as e:
+            print(f"Network error pushing telemetry: {e.reason}", flush=True)
+        except Exception as e:
+            print(f"Error reading/sending telemetry: {e}", flush=True)
+        time.sleep(INTERVAL)
+
+if __name__ == "__main__":
+    try:
+        run_pusher()
+    except KeyboardInterrupt:
+        print("\nStopping telemetry pusher.", flush=True)
+        sys.exit(0)
+

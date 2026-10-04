@@ -1,11 +1,21 @@
+from datetime import timedelta
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session, select
 from database import get_session
 from models.flight_telemetry import FlightTelemetry
+from schemas.telemetry import TrackResponse
 from security import verify_api_key
+from services.track_service import get_current_track
 
 router = APIRouter(tags=["Telemetry"])
+
+DEFAULT_MAX_GAP_MINUTES = 10
+DEFAULT_MIN_DISTANCE_M = 25
+DEFAULT_MAX_RECORDS = 50_000
+MAX_RECORDS_LIMIT = 200_000
+MAX_GAP_DESCRIPTION = "A pause longer than this starts a new flight"
+MIN_DISTANCE_DESCRIPTION = "Drop points closer than this to the previous one"
 
 @router.post(
     "/live",
@@ -23,6 +33,8 @@ def write_telemetry(
     record: FlightTelemetry,
     session: Session = Depends(get_session),
 ):
+    if not record.status:
+        record.status = "success"
     session.add(record)
     session.commit()
     session.refresh(record)
@@ -40,4 +52,18 @@ def get_latest_telemetry(
             detail="No telemetry data recorded yet",
         )
     return latest
+
+@router.get("/track", response_model=TrackResponse)
+def get_track(
+    max_gap_minutes: float = Query(default=DEFAULT_MAX_GAP_MINUTES, gt=0, description=MAX_GAP_DESCRIPTION),
+    min_distance_m: float = Query(default=DEFAULT_MIN_DISTANCE_M, ge=0, description=MIN_DISTANCE_DESCRIPTION),
+    max_records: int = Query(default=DEFAULT_MAX_RECORDS, gt=0, le=MAX_RECORDS_LIMIT),
+    session: Session = Depends(get_session),
+):
+    return get_current_track(
+        session,
+        max_gap=timedelta(minutes=max_gap_minutes),
+        min_distance_m=min_distance_m,
+        max_records=max_records,
+    )
 

@@ -1,6 +1,8 @@
 import L from "leaflet";
 import { flightData } from "./liveFlightData";
-import { ONE_SECOND_MS } from "./consts/time";
+import { createFlightPanel } from "./flightPanel";
+import { createFlightTrack } from "./track/flightTrack";
+import { AIRCRAFT_MARKER_Z_INDEX_OFFSET } from "./consts/map";
 import 'leaflet-rotatedmarker';
 
 let map: L.Map;
@@ -37,25 +39,42 @@ export const MapSetup = () => {
     icon: customIcon,
     rotationAngle: 0,
     rotationOrigin: "center",
+    zIndexOffset: AIRCRAFT_MARKER_Z_INDEX_OFFSET,
   };
 
-  let marker: L.Marker | null = null;
+  const marker = L.marker(flightData.getPosition(), markerOptions).addTo(map);
+  const flightTrack = createFlightTrack(map);
 
-  setInterval(() => {
-    const aircraftPosition = flightData?.getPosition();
-    
-    if (followAircraft) {
-      map.setView(aircraftPosition);
+  const setFollow = (follow: boolean) => {
+    followAircraft = follow;
+    panel.setFollow(follow);
+
+    if (follow) {
+      map.panTo(flightData.getPosition());
+    }
+  };
+
+  const panel = createFlightPanel(map, flightTrack, setFollow);
+  flightTrack.onStatsChange(panel.setStats);
+  map.on("dragstart", () => setFollow(false));
+
+  let trackLoaded = false;
+  flightTrack.load().finally(() => {
+    trackLoaded = true;
+  });
+
+  flightData.subscribe((data) => {
+    const aircraftPosition = flightData.getPosition();
+
+    marker.setLatLng(aircraftPosition);
+    marker.setRotationAngle(flightData.getRotation());
+
+    if (trackLoaded) {
+      flightTrack.addLivePoint(data);
     }
 
-    marker?.remove();
-
-    marker = L.marker(aircraftPosition, {
-      ...markerOptions,
-      rotationAngle: flightData?.getRotation()
-    });
-
-
-    marker.addTo(map);
-  }, ONE_SECOND_MS);
+    if (followAircraft) {
+      map.panTo(aircraftPosition);
+    }
+  });
 };

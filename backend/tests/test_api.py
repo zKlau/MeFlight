@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
@@ -288,6 +289,31 @@ def test_live_telemetry_auth(client):
     latest_res = client.get("/live")
     assert latest_res.status_code == 200
     assert latest_res.json()["LATITUDE"] == 50.0
+
+def test_track_returns_only_latest_flight(client):
+    start = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+    old_flight = [(10.0, 10.0), (10.01, 10.0)]
+    new_flight = [(0.0, 0.0), (50.0, 10.0), (50.0, 10.00001), (50.01, 10.0), (50.02, 10.0)]
+
+    with Session(test_engine) as session:
+        for i, (lat, lon) in enumerate(old_flight):
+            session.add(FlightTelemetry(latitude=lat, longitude=lon, altitude="1,000", status="success", created_at=start + timedelta(seconds=i)))
+        new_start = start + timedelta(hours=2)
+        for i, (lat, lon) in enumerate(new_flight):
+            session.add(FlightTelemetry(latitude=lat, longitude=lon, altitude="12,500", status="success", created_at=new_start + timedelta(seconds=i)))
+        session.commit()
+
+    res = client.get("/track")
+    assert res.status_code == 200
+    data = res.json()
+    assert [(p["lat"], p["lon"]) for p in data["points"]] == [(50.0, 10.0), (50.01, 10.0), (50.02, 10.0)]
+    assert data["points"][0]["altitude"] == 12500
+    assert data["distance_nm"] == 1.2
+
+def test_track_empty(client):
+    res = client.get("/track")
+    assert res.status_code == 200
+    assert res.json()["points"] == []
 
 def test_upload_real_rtw_pln(client):
     real_pln_path = Path("x:/Development/Projects/MeFLight/test/RTW-LRSB.PLN")
