@@ -1,22 +1,46 @@
-from fastapi import Depends, FastAPI
-from sqlmodel import Session
+from contextlib import asynccontextmanager
+from pathlib import Path
+import sys
 
-from backend.models.flight_telemetry import FlightTelemetry
+current_dir = Path(__file__).resolve().parent
+if str(current_dir) not in sys.path:
+    sys.path.insert(0, str(current_dir))
 
-app = FastAPI(title="MeFlight API")
+parent_dir = current_dir.parent
+if str(parent_dir) not in sys.path:
+    sys.path.insert(0, str(parent_dir))
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from database import init_db
+from routers.flight_plans import router as flight_plans_router
+from routers.telemetry import router as telemetry_router
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        init_db()
+    except Exception:
+        pass
+    yield
+
+app = FastAPI(
+    title="MeFlight API",
+    lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(flight_plans_router)
+app.include_router(telemetry_router)
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
-
-
-@app.post('/live', response_model=FlightTelemetry, status_code=status.HTTP_201_CREATED)
-def write_telemetry(
-    record: FlightTelemetry,
-    session: Session = Depends(get_session),
-):
-    session.add(record)
-    session.commit()
-    session.refresh(record)
+    return {"message": "MeFlight API is running"}
     return record

@@ -1,0 +1,151 @@
+from typing import List, Optional
+import uuid
+from fastapi import APIRouter, Depends, File, HTTPException, Request, Response, UploadFile, status
+from sqlmodel import Session
+from database import get_session
+from models.flight_telemetry import FlightTelemetry
+from schemas.flight_plan import (
+    FlightPlanRead,
+    FlightPlanRouteResponse,
+    FlightPlanPathResponse,
+    WaypointRead,
+)
+from security import verify_api_key
+from services.flight_plan_service import (
+    create_flight_plan_from_pln,
+    get_flight_plan_or_404,
+    list_flight_plans,
+    delete_flight_plan,
+    get_flight_plan_route,
+    add_flight_plan_telemetry,
+    get_flight_plan_telemetry,
+    get_flight_plan_path,
+)
+
+router = APIRouter(prefix="/flightplans", tags=["Flight Plans"])
+
+def _to_flight_plan_read(flight_plan) -> FlightPlanRead:
+    waypoints = [WaypointRead.model_validate(wp) for wp in flight_plan.waypoints] if flight_plan.waypoints else []
+    return FlightPlanRead(
+        id=flight_plan.id,
+        title=flight_plan.title,
+        description=flight_plan.description,
+        flight_plan_type=flight_plan.flight_plan_type,
+        route_type=flight_plan.route_type,
+        cruising_altitude=flight_plan.cruising_altitude,
+        departure_id=flight_plan.departure_id,
+        departure_name=flight_plan.departure_name,
+        destination_id=flight_plan.destination_id,
+        destination_name=flight_plan.destination_name,
+        total_waypoints=len(waypoints),
+        created_at=flight_plan.created_at,
+        updated_at=flight_plan.updated_at,
+        waypoints=waypoints,
+    )
+
+@router.post(
+    "/upload",
+    response_model=FlightPlanRead,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(verify_api_key)],
+)
+async def upload_flight_plan(
+    request: Request,
+    file: Optional[UploadFile] = File(default=None),
+    session: Session = Depends(get_session),
+):
+    xml_content = None
+
+    if file is not None:
+        content_bytes = await file.read()
+        xml_content = content_bytes.decode("utf-8", errors="replace")
+    else:
+        body_bytes = await request.body()
+        if body_bytes:
+            xml_content = body_bytes.decode("utf-8", errors="replace")
+
+    if not xml_content or not xml_content.strip():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No flight plan PLN XML content provided. Upload a file or send XML body.",
+        )
+
+    try:
+        flight_plan = create_flight_plan_from_pln(session, xml_content)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        ) from exc
+
+    return _to_flight_plan_read(flight_plan)
+
+@router.get("", response_model=List[FlightPlanRead])
+def get_flight_plans(
+    skip: int = 0,
+    limit: int = 100,
+    session: Session = Depends(get_session),
+):
+    plans = list_flight_plans(session, skip=skip, limit=limit)
+    return [_to_flight_plan_read(p) for p in plans]
+
+@router.get("/{flightplan_id}", response_model=FlightPlanRead)
+def get_single_flight_plan(
+    flightplan_id: uuid.UUID,
+    session: Session = Depends(get_session),
+):
+    plan = get_flight_plan_or_404(session, flightplan_id)
+    return _to_flight_plan_read(plan)
+
+@router.delete(
+    "/{flightplan_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(verify_api_key)],
+)
+def remove_flight_plan(
+    flightplan_id: uuid.UUID,
+    session: Session = Depends(get_session),
+):
+    deleted = delete_flight_plan(session, flightplan_id)
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Flight plan with ID {flightplan_id} not found",
+        )
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@router.get("/{flightplan_id}/route", response_model=FlightPlanRouteResponse)
+@router.get("/{flightplan_id}/points", response_model=FlightPlanRouteResponse)
+def get_flight_plan_route_points(
+    flightplan_id: uuid.UUID,
+    session: Session = Depends(get_session),
+):
+    return get_flight_plan_route(session, flightplan_id)
+
+@router.post(
+    "/{flightplan_id}/telemetry",
+    response_model=FlightTelemetry,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(verify_api_key)],
+)
+def record_flight_plan_telemetry(
+    flightplan_id: uuid.UUID,
+    telemetry: FlightTelemetry,
+    session: Session = Depends(get_session),
+):
+    return add_flight_plan_telemetry(session, flightplan_id, telemetry)
+
+@router.get("/{flightplan_id}/telemetry", response_model=List[FlightTelemetry])
+def fetch_flight_plan_telemetry(
+    flightplan_id: uuid.UUID,
+    session: Session = Depends(get_session),
+):
+    return get_flight_plan_telemetry(session, flightplan_id)
+
+@router.get("/{flightplan_id}/path", response_model=FlightPlanPathResponse)
+def fetch_flight_plan_path(
+    flightplan_id: uuid.UUID,
+    session: Session = Depends(get_session),
+):
+    return get_flight_plan_path(session, flightplan_id)
+

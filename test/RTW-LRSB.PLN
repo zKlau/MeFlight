@@ -1,0 +1,850 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<SimBase.Document>
+    <FlightPlan.FlightPlan>
+        <DepartureID>LRSB</DepartureID>
+        <DestinationID>LRSB</DestinationID>
+        <Title>LRSB - LRSB</Title>
+        <Descr>Flight from LRSB to LRSB</Descr>
+        <FPType>VFR</FPType>
+        <CruisingAlt>3000.000</CruisingAlt>
+        <AppVersion>
+            <AppVersionMajor>12</AppVersionMajor>
+            <AppVersionMinor>2</AppVersionMinor>
+            <AppVersionBuild>282174</AppVersionBuild>
+        </AppVersion>
+        <DepartureDetails>
+            <RunwayNumberFP>9</RunwayNumberFP>
+        </DepartureDetails>
+        <ATCWaypoint id="LRBS">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>LRBS</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="LBBG">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>LBBG</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="LTBA">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>LTBA</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="LTAC">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>LTAC</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="LTAU">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>LTAU</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="LTAT">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>LTAT</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="LTCC">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>LTCC</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="LTCV">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>LTCV</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OITR">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OITR</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OIHS">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OIHS</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OIII">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OIII</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OING">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OING</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OIMM">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OIMM</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OAQN">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OAQN</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OASD">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OASD</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OIZB">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OIZB</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OPDB">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OPDB</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OPPG">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OPPG</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OPKC">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OPKC</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="OPTA">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>OPTA</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VAAH">
+            <ATCWaypointType>Intersection</ATCWaypointType>
+            <ICAO>
+                <ICAORegion>VA</ICAORegion>
+                <ICAOIdent>VAAH</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VAID">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VAID</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VANP">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VANP</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VERP">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VERP</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VEJH">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VEJH</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VERC">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VERC</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VEDX">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VEDX</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VECC">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VECC</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VGBR">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VGBR</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VGEG">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VGEG</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VYKP">
+            <ATCWaypointType>Intersection</ATCWaypointType>
+            <ICAO>
+                <ICAORegion>VD</ICAORegion>
+                <ICAOIdent>VYKP</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VYYY">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VYYY</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VTBD">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VTBD</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VTUN">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VTUN</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VTUK">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VTUK</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VTUW">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VTUW</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VVVH">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VVVH</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="VVNB">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>VVNB</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ZGNN">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ZGNN</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ZGGG">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ZGGG</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ZGOW">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ZGOW</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ZSAM">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ZSAM</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ZSFZ">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ZSFZ</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="DST">
+            <ATCWaypointType>VOR</ATCWaypointType>
+            <ICAO>
+                <ICAORegion>ZS</ICAORegion>
+                <ICAOIdent>DST</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ZSWZ">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ZSWZ</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ZSZS">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ZSZS</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ZSWX">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ZSWX</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ZSYN">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ZSYN</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ZSQD">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ZSQD</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ZSWH">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ZSWH</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="RKSS">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>RKSS</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="RKTY">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>RKTY</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="RKPK">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>RKPK</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="RJFF">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>RJFF</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="RJOA">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>RJOA</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="RJOO">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>RJOO</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="RJNA">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>RJNA</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="TTE">
+            <ATCWaypointType>VOR</ATCWaypointType>
+            <ICAO>
+                <ICAORegion>RJ</ICAORegion>
+                <ICAOIdent>TTE</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="FKE">
+            <ATCWaypointType>VOR</ATCWaypointType>
+            <ICAO>
+                <ICAORegion>RJ</ICAORegion>
+                <ICAOIdent>FKE</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="RJCC">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>RJCC</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="UHSS">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>UHSS</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="UHSN">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>UHSN</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="UHNN">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>UHNN</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="SONUK">
+            <ATCWaypointType>Intersection</ATCWaypointType>
+            <ICAO>
+                <ICAORegion>UH</ICAORegion>
+                <ICAOIdent>SONUK</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="MOKSI">
+            <ATCWaypointType>Intersection</ATCWaypointType>
+            <ICAO>
+                <ICAORegion>UH</ICAORegion>
+                <ICAOIdent>MOKSI</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="UHNA">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>UHNA</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="UHOO">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>UHOO</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="UHMM">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>UHMM</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="UHMW">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>UHMW</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="UHPK">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>UHPK</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="UHPX">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>UHPX</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PASY">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PASY</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PADK">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PADK</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAAK">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAAK</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PADU">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PADU</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAVC">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAVC</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAPE">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAPE</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAPH">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAPH</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAPN">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAPN</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAII">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAII</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAKN">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAKN</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PFKK">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PFKK</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAHO">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAHO</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PANC">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PANC</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PATK">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PATK</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAHV">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAHV</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAFA">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAFA</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAEI">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAEI</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PABI">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PABI</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="PAOR">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>PAOR</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYXY">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYXY</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYQH">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYQH</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYYE">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYYE</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYOJ">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYOJ</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYPE">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYPE</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYZH">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYZH</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYEG">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYEG</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYBA">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYBA</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYYC">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYYC</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYXH">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYXH</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYYN">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYYN</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYQR">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYQR</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYQV">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYQV</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYBR">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYBR</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYWG">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYWG</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYQK">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYQK</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYIB">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYIB</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYQT">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYQT</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYXZ">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYXZ</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYAM">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYAM</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="WALAC">
+            <ATCWaypointType>Intersection</ATCWaypointType>
+            <ICAO>
+                <ICAORegion>CY</ICAORegion>
+                <ICAOIdent>WALAC</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYYZ">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYYZ</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYOW">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYOW</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYUL">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYUL</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYQB">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYQB</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="UBG">
+            <ATCWaypointType>VOR</ATCWaypointType>
+            <ICAO>
+                <ICAORegion>CY</ICAORegion>
+                <ICAOIdent>UBG</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="YWK">
+            <ATCWaypointType>VOR</ATCWaypointType>
+            <ICAO>
+                <ICAORegion>CY</ICAORegion>
+                <ICAOIdent>YWK</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CYYR">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>CYYR</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="BGGH">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>BGGH</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="BIKF">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>BIKF</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="BIAR">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>BIAR</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ENAL">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ENAL</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ENKB">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ENKB</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ENVA">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ENVA</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ESNZ">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ESNZ</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ESKS">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ESKS</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ESSA">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ESSA</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ESCF">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ESCF</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="ESMQ">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>ESMQ</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="EPGD">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>EPGD</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="EPWA">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>EPWA</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="EPRZ">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>EPRZ</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="UKLU">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>UKLU</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="LRSM">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>LRSM</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="CLJ">
+            <ATCWaypointType>VOR</ATCWaypointType>
+            <ICAO>
+                <ICAORegion>LR</ICAORegion>
+                <ICAOIdent>CLJ</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="LRTM">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <ICAO>
+                <ICAOIdent>LRTM</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ArrivalDetails>
+            <RunwayNumberFP>27</RunwayNumberFP>
+        </ArrivalDetails>
+    </FlightPlan.FlightPlan>
+</SimBase.Document>
