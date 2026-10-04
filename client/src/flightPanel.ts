@@ -15,10 +15,11 @@ const legend = () =>
   ).join("");
 
 const panelContent = () => `
+  <div class="flight-panel__title">${UI_TEXT.mapTitle}</div>
   ${checkbox(PANEL_ROLES.follow, UI_TEXT.followAircraft)}
   ${checkbox(PANEL_ROLES.track, UI_TEXT.flownTrack)}
   ${checkbox(PANEL_ROLES.plan, UI_TEXT.flightPlan)}
-  <button type="button" data-role="${PANEL_ROLES.fit}">${UI_TEXT.showWholeFlight}</button>
+  <button type="button" class="button" data-role="${PANEL_ROLES.fit}">${UI_TEXT.showWholeFlight}</button>
   <div class="flight-panel__stats" data-role="${PANEL_ROLES.stats}">${UI_TEXT.noTrack}</div>
   <div class="flight-panel__legend">${legend()}</div>
 `;

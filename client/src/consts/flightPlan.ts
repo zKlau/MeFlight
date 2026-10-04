@@ -21,12 +21,12 @@ export const WAYPOINT_MARKER_STYLE: L.CircleMarkerOptions = {
 export const AIRPORT_MARKER_STYLE: L.CircleMarkerOptions = {
   ...WAYPOINT_MARKER_STYLE,
   radius: 6,
-  fillColor: "#ff4dd2",
+  fillColor: "#b84024",
 };
 
 export const VISITED_AIRPORT_MARKER_STYLE: L.CircleMarkerOptions = {
   ...AIRPORT_MARKER_STYLE,
-  fillColor: "#7bed5f",
+  fillColor: "#0d9488",
 };
 
 export const WAYPOINT_TOOLTIP_OPTIONS: L.TooltipOptions = {

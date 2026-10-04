@@ -1,0 +1,29 @@
+:root {
+  --orange: #b84024;
+  --darker-orange: #551d10;
+  --light-gray: #d5d1d1;
+  --white: #ffffff;
+  --black: #111111;
+  --lighter-black: #1b1b1f;
+  --light-red: #80383383;
+  --red: #ad3e4f;
+  --light-green: #f6fbe4;
+  --green: #0d9488;
+  --lime: #08ff00;
+  --strong-red: #ff0000;
+
+  --color-background: var(--lighter-black);
+  --color-panel: var(--black);
+  --color-border: var(--orange);
+  --color-text: var(--white);
+  --color-muted: var(--light-gray);
+  --color-hairline: rgba(255, 255, 255, 0.08);
+  --color-hover: rgba(184, 64, 36, 0.2);
+  --color-input: rgba(184, 64, 36, 0.6);
+
+  --font: "Clarity City", sans-serif;
+  --border-width: 2px;
+  --radius: 12px;
+  --radius-small: 4px;
+  --shadow: 0 2px 6px rgba(17, 17, 17, 0.6);
+}

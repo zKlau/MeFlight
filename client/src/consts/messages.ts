@@ -7,6 +7,7 @@ export const LOG_MESSAGES = {
 };
 
 export const UI_TEXT = {
+  mapTitle: "Map",
   followAircraft: "Follow aircraft",
   flownTrack: "Flown track",
   flightPlan: "Flight plan",

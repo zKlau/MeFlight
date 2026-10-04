@@ -18,10 +18,10 @@ export const TRACK_LINE_STYLE: L.PolylineOptions = {
 };
 
 export const ALTITUDE_BANDS = [
-  { maxFt: 1_000, color: "#ff4d4d", label: "< 1,000 ft" },
-  { maxFt: 5_000, color: "#ff9f1c", label: "1,000 – 5,000 ft" },
-  { maxFt: 10_000, color: "#ffe14d", label: "5,000 – 10,000 ft" },
-  { maxFt: 20_000, color: "#7bed5f", label: "10,000 – 20,000 ft" },
-  { maxFt: 30_000, color: "#38d9f5", label: "20,000 – 30,000 ft" },
-  { maxFt: Infinity, color: "#c792ff", label: "> 30,000 ft" },
+  { maxFt: 1_000, color: "#ff0000", label: "< 1,000 ft" },
+  { maxFt: 5_000, color: "#b84024", label: "1,000 – 5,000 ft" },
+  { maxFt: 10_000, color: "#d5d1d1", label: "5,000 – 10,000 ft" },
+  { maxFt: 20_000, color: "#08ff00", label: "10,000 – 20,000 ft" },
+  { maxFt: 30_000, color: "#0d9488", label: "20,000 – 30,000 ft" },
+  { maxFt: Infinity, color: "#ffffff", label: "> 30,000 ft" },
 ];
