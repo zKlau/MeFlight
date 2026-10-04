@@ -2,79 +2,12 @@ import os
 import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-import pytest
-from fastapi.testclient import TestClient
-from sqlmodel import Session, SQLModel, create_engine
-from sqlalchemy.pool import StaticPool
-from database import get_session
-from main import app
+from sqlmodel import Session
 from models.flight_plan import FlightPlan, FlightPlanWaypoint
 from models.flight_telemetry import FlightTelemetry
 from services.pln_parser import parse_msfs_pln, parse_world_position
 
-SAMPLE_PLN = """<?xml version="1.0" encoding="UTF-8"?>
-<SimBase.Document Type="AceXML" version="1,0">
-    <Descr>AceXML Document</Descr>
-    <FlightPlan.FlightPlan>
-        <Title>EHAM to EGLL</Title>
-        <FPType>IFR</FPType>
-        <RouteType>Direct</RouteType>
-        <CruisingAlt>24000</CruisingAlt>
-        <DepartureID>EHAM</DepartureID>
-        <DepartureLLA>N52° 18' 31.00",E4° 45' 50.00",-000011.00</DepartureLLA>
-        <DestinationID>EGLL</DestinationID>
-        <DestinationLLA>N51° 28' 14.00",W0° 27' 42.00",+000083.00</DestinationLLA>
-        <DepartureName>Schiphol</DepartureName>
-        <DestinationName>Heathrow</DestinationName>
-        <ATCWaypoint id="EHAM">
-            <ATCWaypointType>Airport</ATCWaypointType>
-            <WorldPosition>N52° 18' 31.00",E4° 45' 50.00",-000011.00</WorldPosition>
-            <ICAO>
-                <ICAOIdent>EHAM</ICAOIdent>
-            </ICAO>
-        </ATCWaypoint>
-        <ATCWaypoint id="GORLO">
-            <ATCWaypointType>Intersection</ATCWaypointType>
-            <WorldPosition>N52° 10' 24.00",E3° 40' 12.00",+005000.00</WorldPosition>
-            <ICAO>
-                <ICAOIdent>GORLO</ICAOIdent>
-            </ICAO>
-        </ATCWaypoint>
-        <ATCWaypoint id="EGLL">
-            <ATCWaypointType>Airport</ATCWaypointType>
-            <WorldPosition>N51° 28' 14.00",W0° 27' 42.00",+000083.00</WorldPosition>
-            <ICAO>
-                <ICAOIdent>EGLL</ICAOIdent>
-            </ICAO>
-        </ATCWaypoint>
-    </FlightPlan.FlightPlan>
-</SimBase.Document>"""
-
-VALID_API_KEY = "test-api-key"
-AUTH_HEADERS = {"X-API-Key": VALID_API_KEY}
-
-test_engine = create_engine(
-    "sqlite://",
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-
-def override_get_session():
-    with Session(test_engine) as session:
-        yield session
-
-app.dependency_overrides[get_session] = override_get_session
-
-@pytest.fixture(autouse=True)
-def setup_database():
-    os.environ["API_KEY"] = VALID_API_KEY
-    SQLModel.metadata.create_all(test_engine)
-    yield
-    SQLModel.metadata.drop_all(test_engine)
-
-@pytest.fixture
-def client():
-    return TestClient(app)
+from fixtures import AUTH_HEADERS, SAMPLE_PLN, VALID_API_KEY, test_engine
 
 def test_parse_world_position_variations():
     lat, lon, alt = parse_world_position('N52° 18\' 31.00",E4° 45\' 50.00",-000011.00')
@@ -324,6 +257,9 @@ def test_upload_real_rtw_pln(client):
         data = res.json()
         assert data["title"] == "LRSB - LRSB"
         assert data["total_waypoints"] > 100
+        assert data["waypoints"][0]["identifier"] == "LRSB"
+        assert data["waypoints"][1]["identifier"] == "LRBS"
+        assert data["waypoints"][-1]["identifier"] == "LRSB"
 
         route_res = client.get(f"/flightplans/{data['id']}/route")
         assert route_res.status_code == 200
