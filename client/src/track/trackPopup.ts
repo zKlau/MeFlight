@@ -16,11 +16,13 @@ export const showNearestPointPopup = (
   map: L.Map,
   points: TrackPoint[],
   event: L.LeafletMouseEvent,
+  offset: number,
 ) => {
-  const nearest = findNearestPoint(points, event.latlng);
+  const nearest = findNearestPoint(points, L.latLng(event.latlng.lat, event.latlng.lng - offset));
+  const position = toLatLng(nearest);
 
   L.popup()
-    .setLatLng(toLatLng(nearest))
+    .setLatLng([position.lat, position.lng + offset])
     .setContent(popupContent(nearest))
     .openOn(map);
 };

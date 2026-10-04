@@ -1,12 +1,11 @@
-import { UNPLACED_POSITION } from "../consts/track";
+import { MISSING_COORDINATE } from "../consts/track";
 import type { AircraftTelemetry, TrackPoint } from "../types";
 import { parseAltitude } from "../utils/format";
 
 export type TimestampedTelemetry = AircraftTelemetry & { created_at: string };
 
 export const isUnplacedPosition = (telemetry: AircraftTelemetry) =>
-  telemetry.LATITUDE === UNPLACED_POSITION.latitude &&
-  telemetry.LONGITUDE === UNPLACED_POSITION.longitude;
+  telemetry.LATITUDE === MISSING_COORDINATE || telemetry.LONGITUDE === MISSING_COORDINATE;
 
 export const telemetryToTrackPoint = (telemetry: TimestampedTelemetry): TrackPoint => ({
   lat: telemetry.LATITUDE,
@@ -14,6 +13,8 @@ export const telemetryToTrackPoint = (telemetry: TimestampedTelemetry): TrackPoi
   altitude: parseAltitude(telemetry.ALTITUDE),
   airspeed: telemetry.AIRSPEED_INDICATE,
   heading: telemetry.MAGNETIC_COMPASS,
+  on_ground: Boolean(telemetry.SIM_ON_GROUND),
+  new_segment: false,
   timestamp: telemetry.created_at,
 });
 

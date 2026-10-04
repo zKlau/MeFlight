@@ -24,6 +24,11 @@ export const AIRPORT_MARKER_STYLE: L.CircleMarkerOptions = {
   fillColor: "#ff4dd2",
 };
 
+export const VISITED_AIRPORT_MARKER_STYLE: L.CircleMarkerOptions = {
+  ...AIRPORT_MARKER_STYLE,
+  fillColor: "#7bed5f",
+};
+
 export const WAYPOINT_TOOLTIP_OPTIONS: L.TooltipOptions = {
   direction: "top",
 };

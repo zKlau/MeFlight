@@ -1,7 +1,7 @@
 import { UI_TEXT } from "../consts/messages";
 import { MINUTES_PER_HOUR, ONE_MINUTE_MS } from "../consts/time";
 import { DISTANCE_DECIMALS, THOUSANDS_SEPARATOR } from "../consts/track";
-import type { TrackStats } from "../types";
+import type { FlightPlanSummary, TrackStats } from "../types";
 
 export const parseAltitude = (altitude: string) => {
   const parsed = Number(altitude.replaceAll(THOUSANDS_SEPARATOR, ""));
@@ -34,3 +34,32 @@ export const formatTrackStats = (stats: TrackStats) => {
   const distance = `${stats.distanceNm.toFixed(DISTANCE_DECIMALS)} ${UI_TEXT.distanceUnit}`;
   return `${distance}${UI_TEXT.statsSeparator}${formatDuration(stats.durationMs)}`;
 };
+
+const UNKNOWN_AIRPORT = "????";
+const PERCENT = 100;
+
+const airportOrUnknown = (ident: string | null) => {
+  if (!ident) {
+    return UNKNOWN_AIRPORT;
+  }
+
+  return ident;
+};
+
+export const formatRoute = (plan: { departure_id: string | null; destination_id: string | null }) =>
+  `${airportOrUnknown(plan.departure_id)} → ${airportOrUnknown(plan.destination_id)}`;
+
+export const planTitle = (plan: FlightPlanSummary) => {
+  if (!plan.title) {
+    return formatRoute(plan);
+  }
+
+  return plan.title;
+};
+
+export const formatNm = (nauticalMiles: number) =>
+  `${nauticalMiles.toLocaleString(undefined, { maximumFractionDigits: DISTANCE_DECIMALS })} ${UI_TEXT.nauticalMilesUnit}`;
+
+export const formatFraction = (fraction: number) => `${Math.round(fraction * PERCENT)}%`;
+
+export const formatDateTime = (iso: string) => new Date(iso).toLocaleString();

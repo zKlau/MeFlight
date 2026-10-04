@@ -6,14 +6,17 @@ import {
   TRACK_LINE_STYLE,
 } from "../consts/track";
 import type { TrackPoint, TrackStats } from "../types";
-import { distanceBetween, timeBetweenMs, toLatLng } from "../utils/geo";
+import { alignLongitude, distanceBetween, timeBetweenMs, toLatLng } from "../utils/geo";
+import { shiftPosition, WORLD_COPY_OFFSETS } from "../utils/worldCopies";
 import { showNearestPointPopup } from "./trackPopup";
 
 type Segment = {
   band: number;
-  line: L.Polyline;
+  lines: L.Polyline[];
   points: TrackPoint[];
 };
+
+const toPosition = (point: TrackPoint, offset: number) => shiftPosition([point.lat, point.lon], offset);
 
 const altitudeBandIndex = (altitudeFt: number) =>
   ALTITUDE_BANDS.findIndex((band) => altitudeFt < band.maxFt);
@@ -24,56 +27,78 @@ export const createTrackLine = (map: L.Map) => {
 
   let points: TrackPoint[] = [];
   let distanceM = 0;
+  let elapsedMs = 0;
   let currentSegment: Segment | null = null;
 
   const lastPoint = () => points.at(-1);
 
+  const connectsToPrevious = (point: TrackPoint) => Boolean(lastPoint()) && !point.new_segment;
+
   const segmentStartPoints = (point: TrackPoint) => {
     const previous = lastPoint();
 
-    if (!previous) {
+    if (!previous || !connectsToPrevious(point)) {
       return [point];
     }
 
     return [previous, point];
   };
 
-  const startSegment = (band: number, point: TrackPoint) => {
-    const segmentPoints = segmentStartPoints(point);
-    const line = L.polyline(segmentPoints.map(toLatLng), {
+  const createLine = (band: number, segmentPoints: TrackPoint[], offset: number) => {
+    const line = L.polyline(segmentPoints.map((point) => toPosition(point, offset)), {
       ...TRACK_LINE_STYLE,
       color: ALTITUDE_BANDS[band].color,
       renderer,
     });
 
-    line.on("click", (event) => showNearestPointPopup(map, segmentPoints, event));
-    line.addTo(layer);
-    currentSegment = { band, line, points: segmentPoints };
+    line.on("click", (event) => showNearestPointPopup(map, segmentPoints, event, offset));
+    return line.addTo(layer);
+  };
+
+  const startSegment = (band: number, point: TrackPoint) => {
+    const segmentPoints = segmentStartPoints(point);
+    const lines = WORLD_COPY_OFFSETS.map((offset) => createLine(band, segmentPoints, offset));
+    currentSegment = { band, lines, points: segmentPoints };
   };
 
   const extendSegment = (segment: Segment, point: TrackPoint) => {
     segment.points.push(point);
-    segment.line.addLatLng(toLatLng(point));
+    segment.lines.forEach((line, index) => line.addLatLng(toPosition(point, WORLD_COPY_OFFSETS[index])));
   };
 
-  const addDistanceTo = (point: TrackPoint) => {
+  const addMetricsTo = (point: TrackPoint) => {
     const previous = lastPoint();
 
-    if (previous) {
+    if (previous && connectsToPrevious(point)) {
       distanceM += distanceBetween(previous, point);
+      elapsedMs += timeBetweenMs(previous, point);
     }
   };
 
-  const add = (point: TrackPoint) => {
+  const alignedWithPrevious = (point: TrackPoint): TrackPoint => {
+    const previous = lastPoint();
+
+    if (!previous) {
+      return point;
+    }
+
+    return { ...point, lon: alignLongitude(point.lon, previous.lon) };
+  };
+
+  const continuesSegment = (segment: Segment | null, band: number, point: TrackPoint): segment is Segment =>
+    segment !== null && segment.band === band && !point.new_segment;
+
+  const add = (rawPoint: TrackPoint) => {
+    const point = alignedWithPrevious(rawPoint);
     const band = altitudeBandIndex(point.altitude);
 
-    if (currentSegment && currentSegment.band === band) {
+    if (continuesSegment(currentSegment, band, point)) {
       extendSegment(currentSegment, point);
     } else {
       startSegment(band, point);
     }
 
-    addDistanceTo(point);
+    addMetricsTo(point);
     points.push(point);
   };
 
@@ -81,25 +106,17 @@ export const createTrackLine = (map: L.Map) => {
     layer.clearLayers();
     points = [];
     distanceM = 0;
+    elapsedMs = 0;
     currentSegment = null;
-  };
-
-  const durationMs = () => {
-    const first = points.at(0);
-    const last = lastPoint();
-
-    if (!first || !last) {
-      return 0;
-    }
-
-    return timeBetweenMs(first, last);
   };
 
   const getStats = (): TrackStats => ({
     distanceNm: distanceM / METERS_PER_NM,
-    durationMs: durationMs(),
+    durationMs: elapsedMs,
     points: points.length,
   });
 
-  return { layer, add, clear, lastPoint, getStats };
+  const getBounds = () => L.latLngBounds(points.map(toLatLng));
+
+  return { layer, add, clear, lastPoint, getStats, getBounds };
 };

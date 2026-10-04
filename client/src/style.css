@@ -1,12 +1,174 @@
+:root {
+  --panel-bg: rgba(20, 24, 32, 0.96);
+  --panel-border: #2c3442;
+  --text: #f1f3f5;
+  --muted: #8c96a5;
+  --accent: #38d9f5;
+  --sidebar-width: 320px;
+}
+
 body {
+  display: flex;
   width: 100vw;
   height: 100vh;
   margin: 0;
+  background: #11151c;
+  color: var(--text);
+  font: 14px/1.4 system-ui, sans-serif;
 }
 
 #map {
+  flex: 1;
   height: 100%;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-width);
+  height: 100%;
+  overflow-y: auto;
+  border-right: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+}
+
+.sidebar__header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--panel-border);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.sidebar__section {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.sidebar__title,
+.sidebar h2 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.sidebar h3 {
+  margin: 14px 0 6px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plan-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.plan-entry:hover {
+  background: #232a36;
+}
+
+.plan-entry.selected {
+  border-color: var(--accent);
+  background: #16323a;
+}
+
+.plan-entry__meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.progress-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.progress-label {
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.progress-bar {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #2b313c;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  background: var(--accent);
+}
+
+.sidebar-stats {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  margin: 10px 0 0;
+}
+
+.sidebar-stats dt {
+  color: var(--muted);
+}
+
+.sidebar-stats dd {
+  margin: 0;
+}
+
+.stop-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.parked-aircraft {
+  filter: grayscale(1) brightness(1.6);
+  opacity: 0.85;
+}
+
+.parked-tooltip {
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  body {
+    flex-direction: column-reverse;
+  }
+
+  #map {
+    flex: 1;
+    min-height: 55vh;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 45vh;
+    border-top: 1px solid var(--panel-border);
+    border-right: none;
+  }
 }
 
 .flight-panel {

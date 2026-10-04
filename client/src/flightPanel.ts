@@ -50,19 +50,50 @@ export const createFlightPanel = (
     });
   };
 
-  const fitWholeFlight = () => {
-    const bounds = flightTrack.getBounds();
+  let pendingBounds: L.LatLngBounds | null = null;
 
-    if (!bounds.isValid()) {
-      return;
-    }
+  const hasSize = () => {
+    const size = map.getSize();
+    return size.x > 0 && size.y > 0;
+  };
 
-    onFollowChange(false);
+  const applyFit = (bounds: L.LatLngBounds) => {
+    map.stop();
     map.fitBounds(bounds, {
       paddingTopLeft: [FIT_BOUNDS_PADDING_PX, FIT_BOUNDS_PADDING_PX],
       paddingBottomRight: [container.offsetWidth + FIT_BOUNDS_PADDING_PX, FIT_BOUNDS_PADDING_PX],
     });
   };
+
+  const fitBounds = (bounds: L.LatLngBounds) => {
+    if (!bounds.isValid()) {
+      return;
+    }
+
+    onFollowChange(false);
+    map.invalidateSize();
+
+    if (!hasSize()) {
+      pendingBounds = bounds;
+      return;
+    }
+
+    applyFit(bounds);
+  };
+
+  const applyPendingFit = () => {
+    if (!pendingBounds || !hasSize()) {
+      return;
+    }
+
+    const bounds = pendingBounds;
+    pendingBounds = null;
+    applyFit(bounds);
+  };
+
+  map.on("resize", applyPendingFit);
+
+  const fitWholeFlight = () => fitBounds(flightTrack.getBounds());
 
   followInput.addEventListener("change", () => onFollowChange(followInput.checked));
   bindLayerToggle(PANEL_ROLES.track, flightTrack.trackLayer);
@@ -77,6 +108,8 @@ export const createFlightPanel = (
   control.addTo(map);
 
   return {
+    fitBounds,
+    fitWholeFlight,
     setFollow: (follow: boolean) => {
       followInput.checked = follow;
     },

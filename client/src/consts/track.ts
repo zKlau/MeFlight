@@ -8,7 +8,7 @@ export const METERS_PER_NM = 1852;
 export const DISTANCE_DECIMALS = 1;
 export const THOUSANDS_SEPARATOR = ",";
 
-export const UNPLACED_POSITION = { latitude: 0, longitude: 0 };
+export const MISSING_COORDINATE = 0;
 
 export const TRACK_CLICK_TOLERANCE_PX = 8;
 

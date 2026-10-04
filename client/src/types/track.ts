@@ -4,6 +4,8 @@ export type TrackPoint = {
   altitude: number;
   airspeed: number;
   heading: number;
+  on_ground: boolean;
+  new_segment: boolean;
   timestamp: string;
 };
 

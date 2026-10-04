@@ -2,3 +2,4 @@ export const ONE_SECOND_MS = 1000;
 export const SECONDS_PER_MINUTE = 60;
 export const MINUTES_PER_HOUR = 60;
 export const ONE_MINUTE_MS = SECONDS_PER_MINUTE * ONE_SECOND_MS;
+export const PROGRESS_REFRESH_MS = ONE_MINUTE_MS;

@@ -1,12 +1,12 @@
 import L from "leaflet";
 import { fetchJson } from "../apiService";
-import { ENDPOINTS } from "../consts/endpoints";
 import { LOG_MESSAGES } from "../consts/messages";
-import { MIN_POINT_DISTANCE_M, NEW_FLIGHT_GAP_MS } from "../consts/track";
+import { isPlanSelection, LATEST_FLIGHT } from "../selection";
 import type { AircraftTelemetry, TrackPoint, TrackResponse, TrackStats } from "../types";
-import { distanceBetween, timeBetweenMs } from "../utils/geo";
+import { alignLongitude } from "../utils/geo";
 import { createFlightPlanLayer } from "./flightPlanLayer";
 import { createTrackLine } from "./trackLine";
+import { belongsToSelection, isAfterPause, isTooClose, planIdFor, trackEndpoint } from "./trackRules";
 import {
   flightPlanIdOf,
   isUnplacedPosition,
@@ -20,6 +20,8 @@ export const createFlightTrack = (map: L.Map) => {
   const trackLine = createTrackLine(map);
   const flightPlan = createFlightPlanLayer(map);
   const statsListeners = new Set<StatsListener>();
+  let selection = LATEST_FLIGHT;
+  let loaded = false;
   let lastTelemetryTimestamp: string | undefined;
 
   const notifyStatsChange = () => {
@@ -34,26 +36,6 @@ export const createFlightTrack = (map: L.Map) => {
   const isNewTelemetry = (telemetry: AircraftTelemetry): telemetry is TimestampedTelemetry =>
     Boolean(telemetry.created_at) && telemetry.created_at !== lastTelemetryTimestamp;
 
-  const startsNewFlight = (point: TrackPoint) => {
-    const previous = trackLine.lastPoint();
-
-    if (!previous) {
-      return false;
-    }
-
-    return timeBetweenMs(previous, point) > NEW_FLIGHT_GAP_MS;
-  };
-
-  const isTooCloseToLastPoint = (point: TrackPoint) => {
-    const previous = trackLine.lastPoint();
-
-    if (!previous) {
-      return false;
-    }
-
-    return distanceBetween(previous, point) < MIN_POINT_DISTANCE_M;
-  };
-
   const rememberLastTimestamp = (track: TrackResponse) => {
     const lastPoint = track.points.at(-1);
 
@@ -67,19 +49,55 @@ export const createFlightTrack = (map: L.Map) => {
     track.points.forEach(trackLine.add);
     rememberLastTimestamp(track);
     notifyStatsChange();
-    flightPlan.show(track.flightplan_id);
   };
 
-  const load = async () => {
+  const show = async (nextSelection: string) => {
+    selection = nextSelection;
+    loaded = false;
+    lastTelemetryTimestamp = undefined;
+    trackLine.clear();
+
     try {
-      drawTrack(await fetchJson<TrackResponse>(ENDPOINTS.track));
+      const track = await fetchJson<TrackResponse>(trackEndpoint(nextSelection));
+
+      if (nextSelection !== selection) {
+        return;
+      }
+
+      drawTrack(track);
+      await flightPlan.show(planIdFor(nextSelection, track));
     } catch (error) {
       console.warn(LOG_MESSAGES.trackFetchFailed, error);
+    } finally {
+      loaded = true;
     }
   };
 
+  const followLivePlan = (telemetry: AircraftTelemetry) => {
+    if (!isPlanSelection(selection)) {
+      flightPlan.show(flightPlanIdOf(telemetry));
+    }
+  };
+
+  const prepareSegment = (point: TrackPoint) => {
+    if (!isAfterPause(trackLine.lastPoint(), point)) {
+      return;
+    }
+
+    if (isPlanSelection(selection)) {
+      point.new_segment = true;
+      return;
+    }
+
+    trackLine.clear();
+  };
+
   const addLivePoint = (telemetry: AircraftTelemetry) => {
-    flightPlan.show(flightPlanIdOf(telemetry));
+    if (!loaded || !belongsToSelection(telemetry, selection)) {
+      return;
+    }
+
+    followLivePlan(telemetry);
 
     if (!isNewTelemetry(telemetry)) {
       return;
@@ -92,12 +110,9 @@ export const createFlightTrack = (map: L.Map) => {
     }
 
     const point = telemetryToTrackPoint(telemetry);
+    prepareSegment(point);
 
-    if (startsNewFlight(point)) {
-      trackLine.clear();
-    }
-
-    if (isTooCloseToLastPoint(point)) {
+    if (isTooClose(trackLine.lastPoint(), point)) {
       return;
     }
 
@@ -105,23 +120,28 @@ export const createFlightTrack = (map: L.Map) => {
     notifyStatsChange();
   };
 
-  const getBounds = () => {
-    const bounds = L.latLngBounds([]);
+  const alignToTrack = (longitude: number) => {
+    const previous = trackLine.lastPoint();
 
-    for (const layer of [trackLine.layer, flightPlan.layer]) {
-      if (layer.getLayers().length > 0) {
-        bounds.extend(layer.getBounds());
-      }
+    if (!previous) {
+      return longitude;
     }
 
-    return bounds;
+    return alignLongitude(longitude, previous.lon);
   };
 
+  const getBounds = () => trackLine.getBounds().extend(flightPlan.getBounds());
+
+  const getTrackBounds = () => trackLine.getBounds();
+
   return {
-    load,
+    show,
     addLivePoint,
+    alignToTrack,
     getBounds,
+    getTrackBounds,
     onStatsChange,
+    markVisited: flightPlan.markVisited,
     trackLayer: trackLine.layer,
     planLayer: flightPlan.layer,
   };

@@ -10,8 +10,15 @@
     <script src="vendor/leaflet/leaflet.js"></script>
   </head>
   <body>
+    <aside class="sidebar">
+      <header class="sidebar__header">MeFlight</header>
+      <section class="sidebar__section">
+        <h2 class="sidebar__title">Flights</h2>
+        <ul class="plan-list" id="plan-list"></ul>
+      </section>
+      <section class="sidebar__section" id="progress-card"></section>
+    </aside>
     <div id="map"></div>
-    <div id=""></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
