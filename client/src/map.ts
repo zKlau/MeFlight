@@ -1,5 +1,6 @@
 import L from "leaflet";
-import { createAircraftMarker, isLiveTelemetryFresh } from "./aircraftMarker";
+import { createAircraftMarker } from "./aircraftMarker";
+import { isLiveTelemetryFresh } from "./utils/liveness";
 import { PROGRESS_REFRESH_MS } from "./consts/time";
 import { LOG_MESSAGES } from "./consts/messages";
 import { createFlightPanel } from "./flightPanel";
@@ -11,23 +12,14 @@ import { createProgressCard, type PlanDetails } from "./sidebar/progressCard";
 import { createFlightTrack } from "./track/flightTrack";
 import { flightPlanIdOf, isUnplacedPosition } from "./track/trackPoint";
 import type { AircraftTelemetry, LastState } from "./types";
+import { addSatelliteTiles } from "./utils/tiles";
 
 let map: L.Map;
 let followAircraft: boolean = true;
 
 const leafletMap = () => {
   map = L.map("map").setView(flightData?.getPosition(), 13);
-  var mapLink = '<a href="http://www.esri.com/">Esri</a>';
-  var wholink =
-    "i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community";
-
-  L.tileLayer(
-    "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    {
-      attribution: "&copy; " + mapLink + ", " + wholink,
-      maxZoom: 18,
-    },
-  ).addTo(map);
+  addSatelliteTiles(map);
 
   new ResizeObserver(() => map.invalidateSize()).observe(map.getContainer());
 };

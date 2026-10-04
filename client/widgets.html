@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MeFlight stream widgets</title>
+    <script src="/config.js"></script>
+  </head>
+  <body class="builder-page">
+    <main class="builder">
+      <header class="builder__header">
+        <h1>Stream widgets</h1>
+        <a class="button" href="/">Back to map</a>
+      </header>
+      <p class="muted">
+        In OBS add a <strong>Browser</strong> source, paste a widget URL and use the recommended size. The page
+        background is transparent, so only the widget shows on stream.
+      </p>
+      <section class="builder__options">
+        <label class="builder__field">
+          Flight plan
+          <select id="plan-select"></select>
+        </label>
+        <label class="builder__check"><input type="checkbox" id="panel-toggle" checked /> Background panel</label>
+        <label class="builder__check"><input type="checkbox" id="label-toggle" checked /> Labels</label>
+      </section>
+      <section class="builder__grid" id="widget-list"></section>
+    </main>
+    <script type="module" src="/src/widgets/builder.ts"></script>
+  </body>
+</html>

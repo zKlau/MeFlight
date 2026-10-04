@@ -35,6 +35,8 @@ export type AircraftTelemetry = {
   FLIGHTPLAN_ID?: string | null;
   SIM_ON_GROUND?: boolean;
   PLANE_HEADING_DEGREES_TRUE?: number;
+  GROUND_VELOCITY?: number;
+  FUEL_TOTAL_QUANTITY?: number;
   FUEL_TANK_LEVELS?: Record<string, number>;
   created_at?: string;
 };

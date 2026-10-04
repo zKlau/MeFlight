@@ -116,3 +116,20 @@ backend's public domain, not an internal hostname.
 
 Pick **Latest flight** for the live view, or a flight plan to see its route, everything you flew on it, progress
 statistics and where the aircraft is parked. The selected plan is kept in the URL (`#plan=<id>`) so it can be shared.
+
+### Stream widgets (OBS)
+
+Open `/widgets.html` (also linked at the bottom of the sidebar) to preview every widget and copy its URL. In OBS add a
+**Browser** source with that URL and the recommended size; the page background is transparent.
+
+`/widget.html?type=<type>` options:
+
+| Parameter | Values | Default |
+| --- | --- | --- |
+| `type` | `strip`, `map`, `progress`, `time-left`, `distance`, `next`, `speed`, `altitude`, `heading`, `fuel` | – |
+| `plan` | a flight plan id | the plan you are currently flying |
+| `panel` | `0` hides the background panel | shown |
+| `label` | `0` hides the labels | shown |
+| `zoom` | map zoom level for `type=map` (2–16) | `9` |
+
+Widgets fade when no live data has arrived for 30 seconds.

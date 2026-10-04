@@ -33,6 +33,17 @@
   margin-top: 18px;
 }
 
+.sidebar__footer {
+  margin-top: auto;
+  padding: 16px;
+}
+
+.sidebar__link {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+
 .plan-list {
   display: flex;
   flex-direction: column;

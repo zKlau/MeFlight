@@ -2,7 +2,6 @@ import L from "leaflet";
 import {
   AIRCRAFT_MARKER_Z_INDEX_OFFSET,
   LIVE_OPACITY,
-  LIVE_STALE_MS,
   PLANE_ICON_SIZE,
   PLANE_ICON_URL,
   ROTATION_ORIGIN,
@@ -10,15 +9,9 @@ import {
 } from "./consts/map";
 import { isUnplacedPosition } from "./track/trackPoint";
 import type { AircraftTelemetry } from "./types";
+import { isLiveTelemetryFresh } from "./utils/liveness";
 import { createWorldMarkers } from "./utils/worldCopies";
 
-export const isLiveTelemetryFresh = (telemetry: AircraftTelemetry) => {
-  if (!telemetry.created_at) {
-    return false;
-  }
-
-  return Date.now() - Date.parse(telemetry.created_at) < LIVE_STALE_MS;
-};
 
 const opacityFor = (telemetry: AircraftTelemetry) => {
   if (isLiveTelemetryFresh(telemetry)) {
