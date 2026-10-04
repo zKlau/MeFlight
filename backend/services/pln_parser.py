@@ -91,6 +91,44 @@ def _get_child_text(parent: ET.Element, target_tag: str) -> Optional[str]:
             return child.text.strip() if child.text else None
     return None
 
+AIRPORT_WAYPOINT_TYPE = "Airport"
+
+def _endpoint_airport(ident: Optional[str], lla: Optional[str], airports_db: Dict[str, Any]) -> Optional[ParsedWaypoint]:
+    if not ident:
+        return None
+
+    if lla:
+        lat, lon, alt = parse_world_position(lla)
+        return ParsedWaypoint(0, ident, AIRPORT_WAYPOINT_TYPE, lat, lon, alt, lla)
+
+    airport_info = airports_db.get(ident.upper())
+    if airport_info is None:
+        return None
+
+    lat = float(airport_info["lat"])
+    lon = float(airport_info["lon"])
+    elevation = airport_info.get("elevation")
+    alt = float(elevation) if elevation is not None else None
+    return ParsedWaypoint(0, ident, AIRPORT_WAYPOINT_TYPE, lat, lon, alt, f"{lat},{lon},{alt or 0.0}")
+
+def _with_endpoint_airports(
+    waypoints: List[ParsedWaypoint],
+    departure: Optional[ParsedWaypoint],
+    destination: Optional[ParsedWaypoint],
+) -> List[ParsedWaypoint]:
+    result = list(waypoints)
+
+    if departure and (not result or result[0].identifier != departure.identifier):
+        result.insert(0, departure)
+
+    if destination and result[-1].identifier != destination.identifier:
+        result.append(destination)
+
+    for index, waypoint in enumerate(result):
+        waypoint.order_index = index
+
+    return result
+
 def parse_msfs_pln(xml_content: str | bytes) -> ParsedFlightPlan:
     if isinstance(xml_content, bytes):
         xml_content = xml_content.decode("utf-8", errors="replace")
@@ -146,9 +184,9 @@ def parse_msfs_pln(xml_content: str | bytes) -> ParsedFlightPlan:
             wpt_type = _get_child_text(el, "ATCWaypointType")
             pos_str = _get_child_text(el, "WorldPosition")
 
-            if not pos_str and order_idx == 0:
+            if not pos_str and ident == departure_id:
                 pos_str = _get_child_text(fp_element, "DepartureLLA")
-            elif not pos_str and _get_child_text(fp_element, "DestinationLLA"):
+            elif not pos_str and ident == destination_id:
                 pos_str = _get_child_text(fp_element, "DestinationLLA")
 
             lat = 0.0
@@ -186,6 +224,12 @@ def parse_msfs_pln(xml_content: str | bytes) -> ParsedFlightPlan:
                 )
             )
             order_idx += 1
+
+    parsed_waypoints = _with_endpoint_airports(
+        parsed_waypoints,
+        _endpoint_airport(departure_id, _get_child_text(fp_element, "DepartureLLA"), airports_db),
+        _endpoint_airport(destination_id, _get_child_text(fp_element, "DestinationLLA"), airports_db),
+    )
 
     return ParsedFlightPlan(
         title=title,
