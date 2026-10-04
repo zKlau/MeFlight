@@ -2,6 +2,7 @@ export const LOG_MESSAGES = {
   liveFetchFailed: "Could not fetch live telemetry",
   trackFetchFailed: "Could not load flight track",
   flightPlanFetchFailed: "Could not load flight plan route",
+  airportNamesFetchFailed: "Could not load airport names",
   progressFetchFailed: "Could not load flight plan progress",
   plansFetchFailed: "Could not load flight plans",
 };
@@ -11,6 +12,7 @@ export const UI_TEXT = {
   followAircraft: "Follow aircraft",
   flownTrack: "Flown track",
   flightPlan: "Flight plan",
+  placeNames: "Place names",
   showWholeFlight: "Show whole flight",
   noTrack: "No track yet",
   distanceUnit: "nm flown",

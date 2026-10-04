@@ -2,6 +2,7 @@ export const ENDPOINTS = {
   live: "live",
   track: "track",
   flightPlans: "flightplans",
+  airportNames: (idents: string[]) => `airports/names?idents=${encodeURIComponent(idents.join(","))}`,
   flightPlanRoute: (flightPlanId: string) => `flightplans/${flightPlanId}/route`,
   flightPlanTrack: (flightPlanId: string) => `flightplans/${flightPlanId}/track`,
   flightPlanProgress: (flightPlanId: string) => `flightplans/${flightPlanId}/progress`,

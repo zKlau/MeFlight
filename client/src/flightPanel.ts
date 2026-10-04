@@ -19,6 +19,7 @@ const panelContent = () => `
   ${checkbox(PANEL_ROLES.follow, UI_TEXT.followAircraft)}
   ${checkbox(PANEL_ROLES.track, UI_TEXT.flownTrack)}
   ${checkbox(PANEL_ROLES.plan, UI_TEXT.flightPlan)}
+  ${checkbox(PANEL_ROLES.places, UI_TEXT.placeNames)}
   <button type="button" class="button" data-role="${PANEL_ROLES.fit}">${UI_TEXT.showWholeFlight}</button>
   <div class="flight-panel__stats" data-role="${PANEL_ROLES.stats}">${UI_TEXT.noTrack}</div>
   <div class="flight-panel__legend">${legend()}</div>
@@ -27,6 +28,7 @@ const panelContent = () => `
 export const createFlightPanel = (
   map: L.Map,
   flightTrack: FlightTrack,
+  placeLabels: L.Layer,
   onFollowChange: (follow: boolean) => void,
 ) => {
   const container = L.DomUtil.create("div", "flight-panel");
@@ -99,6 +101,7 @@ export const createFlightPanel = (
   followInput.addEventListener("change", () => onFollowChange(followInput.checked));
   bindLayerToggle(PANEL_ROLES.track, flightTrack.trackLayer);
   bindLayerToggle(PANEL_ROLES.plan, flightTrack.planLayer);
+  bindLayerToggle(PANEL_ROLES.places, placeLabels);
   element<HTMLButtonElement>(PANEL_ROLES.fit).addEventListener("click", fitWholeFlight);
 
   L.DomEvent.disableClickPropagation(container);

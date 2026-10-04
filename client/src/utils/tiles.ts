@@ -10,3 +10,9 @@ export const addSatelliteTiles = (map: L.Map) =>
     attribution: SATELLITE_ATTRIBUTION,
     maxZoom: SATELLITE_MAX_ZOOM,
   }).addTo(map);
+
+const PLACE_LABELS_URL =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}";
+
+export const addPlaceLabels = (map: L.Map) =>
+  L.tileLayer(PLACE_LABELS_URL, { maxZoom: SATELLITE_MAX_ZOOM }).addTo(map);

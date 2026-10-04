@@ -12,14 +12,16 @@ import { createProgressCard, type PlanDetails } from "./sidebar/progressCard";
 import { createFlightTrack } from "./track/flightTrack";
 import { flightPlanIdOf, isUnplacedPosition } from "./track/trackPoint";
 import type { AircraftTelemetry, LastState } from "./types";
-import { addSatelliteTiles } from "./utils/tiles";
+import { addPlaceLabels, addSatelliteTiles } from "./utils/tiles";
 
 let map: L.Map;
+let placeLabels: L.TileLayer;
 let followAircraft: boolean = true;
 
 const leafletMap = () => {
   map = L.map("map").setView(flightData?.getPosition(), 13);
   addSatelliteTiles(map);
+  placeLabels = addPlaceLabels(map);
 
   new ResizeObserver(() => map.invalidateSize()).observe(map.getContainer());
 };
@@ -46,7 +48,7 @@ export const MapSetup = () => {
     }
   };
 
-  const panel = createFlightPanel(map, flightTrack, setFollow);
+  const panel = createFlightPanel(map, flightTrack, placeLabels, setFollow);
   flightTrack.onStatsChange(panel.setStats);
   map.on("dragstart", () => setFollow(false));
 

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from functools import lru_cache
-from typing import List, Optional
+from typing import Dict, List, Optional
 from services.geo import Coordinate, haversine_m, meters_to_nm
 
 AIRPORT_CODE_TYPE = "ICAO"
@@ -47,3 +47,11 @@ def nearest_airport(position: Coordinate) -> Optional[NearbyAirport]:
     closest = min(candidates, key=lambda airport: haversine_m(position, (airport.latitude, airport.longitude)))
     distance_m = haversine_m(position, (closest.latitude, closest.longitude))
     return NearbyAirport(airport=closest, distance_nm=meters_to_nm(distance_m))
+
+@lru_cache(maxsize=1)
+def _airports_by_ident() -> Dict[str, Airport]:
+    return {airport.ident: airport for airport in _all_airports()}
+
+def airport_names(idents: List[str]) -> Dict[str, str]:
+    airports = _airports_by_ident()
+    return {ident: airports[ident].name for ident in idents if ident in airports}

@@ -2,6 +2,7 @@ import L from "leaflet";
 import { fetchJson } from "../apiService";
 import { ENDPOINTS } from "../consts/endpoints";
 import {
+  AIRPORT_LABEL_SEPARATOR,
   AIRPORT_MARKER_STYLE,
   AIRPORT_WAYPOINT_TYPE,
   PLAN_LINE_STYLE,
@@ -14,8 +15,20 @@ import type { FlightPlanRoutePoint, FlightPlanRouteResponse } from "../types";
 import { unwrapLongitudes } from "../utils/geo";
 import { shiftPosition, WORLD_COPY_OFFSETS, type Position } from "../utils/worldCopies";
 
+const isAirport = (waypoint: FlightPlanRoutePoint) => waypoint.waypoint_type === AIRPORT_WAYPOINT_TYPE;
+
+const airportLabel = (waypoint: FlightPlanRoutePoint, names: Record<string, string>) => {
+  const name = names[waypoint.identifier.toUpperCase()];
+
+  if (!name) {
+    return waypoint.identifier;
+  }
+
+  return `${waypoint.identifier}${AIRPORT_LABEL_SEPARATOR}${name}`;
+};
+
 const waypointStyle = (waypoint: FlightPlanRoutePoint, visited: Set<number>) => {
-  if (waypoint.waypoint_type !== AIRPORT_WAYPOINT_TYPE) {
+  if (!isAirport(waypoint)) {
     return WAYPOINT_MARKER_STYLE;
   }
 
@@ -51,9 +64,33 @@ export const createFlightPlanLayer = (map: L.Map) => {
     bounds = L.latLngBounds(positions);
   };
 
+  const applyAirportNames = (names: Record<string, string>) => {
+    markers.forEach((copies, waypoint) => {
+      if (isAirport(waypoint)) {
+        copies.forEach((marker) => marker.setTooltipContent(airportLabel(waypoint, names)));
+      }
+    });
+  };
+
+  const loadAirportNames = async (route: FlightPlanRouteResponse, id: string) => {
+    const idents = [...new Set(route.points.filter(isAirport).map((waypoint) => waypoint.identifier))];
+
+    try {
+      const names = await fetchJson<Record<string, string>>(ENDPOINTS.airportNames(idents));
+
+      if (id === flightPlanId) {
+        applyAirportNames(names);
+      }
+    } catch (error) {
+      console.warn(LOG_MESSAGES.airportNamesFetchFailed, error);
+    }
+  };
+
   const fetchAndDraw = async (id: string) => {
     try {
-      draw(await fetchJson<FlightPlanRouteResponse>(ENDPOINTS.flightPlanRoute(id)));
+      const route = await fetchJson<FlightPlanRouteResponse>(ENDPOINTS.flightPlanRoute(id));
+      draw(route);
+      loadAirportNames(route, id);
     } catch (error) {
       console.warn(LOG_MESSAGES.flightPlanFetchFailed, error);
     }

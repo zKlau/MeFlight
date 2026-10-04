@@ -1,6 +1,7 @@
 import type L from "leaflet";
 
 export const AIRPORT_WAYPOINT_TYPE = "Airport";
+export const AIRPORT_LABEL_SEPARATOR = " · ";
 
 export const PLAN_LINE_STYLE: L.PolylineOptions = {
   color: "#ffffff",
