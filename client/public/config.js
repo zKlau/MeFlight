@@ -1,0 +1,1 @@
+window.MEFLIGHT_CONFIG = {};

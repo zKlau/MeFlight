@@ -1,3 +1,4 @@
+import "leaflet/dist/leaflet.css";
 import { flightData } from "./liveFlightData";
 import { MapSetup } from "./map";
 

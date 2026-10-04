@@ -1,5 +1,21 @@
+declare global {
+    interface Window {
+        MEFLIGHT_CONFIG?: { apiUrl?: string };
+    }
+}
+
+const apiBaseUrl = () => {
+    const runtimeConfig = window.MEFLIGHT_CONFIG;
+
+    if (runtimeConfig && runtimeConfig.apiUrl) {
+        return runtimeConfig.apiUrl;
+    }
+
+    return import.meta.env.VITE_ENDPOINT_URL;
+}
+
 export const buildEndpoint = (endpoint: string) => {
-    return `${import.meta.env.VITE_ENDPOINT_URL}/${endpoint}` ;
+    return `${apiBaseUrl()}/${endpoint}` ;
 }
 
 const NOT_FOUND = 404;

@@ -93,7 +93,26 @@ npm install
 npm run dev
 ```
 
-Environment (`client/.env`): `VITE_ENDPOINT_URL` pointing at the backend.
+Environment (`client/.env`): `VITE_ENDPOINT_URL` pointing at the backend (used by `npm run dev`).
+
+### Docker
+
+The image builds the site and serves it with nginx. The backend URL is read when the container starts (`API_URL`),
+so the same image works against any backend.
+
+```bash
+cd client
+docker compose up -d --build
+```
+
+`API_URL` defaults to `http://localhost:8000` and the site listens on `WEB_PORT` (default `8080`).
+
+### Coolify
+
+Create a **Docker Compose** resource from this repository with base directory `/client` and compose file
+`docker-compose.coolify.yaml`, set `API_URL` to the public URL of the backend (e.g. `https://api.example.com`), set
+the domain of the `web` service and deploy. `API_URL` must be reachable from the visitor's browser, so use the
+backend's public domain, not an internal hostname.
 
 Pick **Latest flight** for the live view, or a flight plan to see its route, everything you flew on it, progress
 statistics and where the aircraft is parked. The selected plan is kept in the URL (`#plan=<id>`) so it can be shared.
