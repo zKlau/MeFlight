@@ -1,7 +1,7 @@
 from typing import Optional, List
 import uuid
 from fastapi import HTTPException, status
-from sqlmodel import Session, select
+from sqlmodel import Session, delete, select
 from models.flight_plan import FlightPlan, FlightPlanWaypoint
 from models.flight_telemetry import FlightTelemetry
 from schemas.flight_plan import (
@@ -87,6 +87,7 @@ def delete_flight_plan(
     flight_plan = get_flight_plan(session, flightplan_id)
     if not flight_plan:
         return False
+    session.exec(delete(FlightTelemetry).where(FlightTelemetry.flightplan_id == flightplan_id))
     session.delete(flight_plan)
     session.commit()
     return True

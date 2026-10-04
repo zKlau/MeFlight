@@ -1,9 +1,14 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 import uuid
-from fastapi import APIRouter, Depends, File, HTTPException, Request, Response, UploadFile, status
+from fastapi import APIRouter, Body, Depends, File, HTTPException, Query, Request, Response, UploadFile, status
 from sqlmodel import Session
 from database import get_session
 from models.flight_telemetry import FlightTelemetry
+from schemas.progress import FlightPlanProgressResponse
+from schemas.telemetry import LastStateResponse, TrackResponse
+from services.flight_state_service import get_flight_plan_last_state, get_flight_plan_track
+from services.progress_service import get_flight_plan_progress
+from services.telemetry_payload import parse_telemetry
 from schemas.flight_plan import (
     FlightPlanRead,
     FlightPlanRouteResponse,
@@ -23,6 +28,8 @@ from services.flight_plan_service import (
 )
 
 router = APIRouter(prefix="/flightplans", tags=["Flight Plans"])
+
+DEFAULT_PLAN_TRACK_MIN_DISTANCE_M = 100
 
 def _to_flight_plan_read(flight_plan) -> FlightPlanRead:
     waypoints = [WaypointRead.model_validate(wp) for wp in flight_plan.waypoints] if flight_plan.waypoints else []
@@ -130,10 +137,10 @@ def get_flight_plan_route_points(
 )
 def record_flight_plan_telemetry(
     flightplan_id: uuid.UUID,
-    telemetry: FlightTelemetry,
+    payload: Dict[str, Any] = Body(...),
     session: Session = Depends(get_session),
 ):
-    return add_flight_plan_telemetry(session, flightplan_id, telemetry)
+    return add_flight_plan_telemetry(session, flightplan_id, parse_telemetry(payload))
 
 @router.get("/{flightplan_id}/telemetry", response_model=List[FlightTelemetry])
 def fetch_flight_plan_telemetry(
@@ -141,6 +148,28 @@ def fetch_flight_plan_telemetry(
     session: Session = Depends(get_session),
 ):
     return get_flight_plan_telemetry(session, flightplan_id)
+
+@router.get("/{flightplan_id}/track", response_model=TrackResponse)
+def fetch_flight_plan_track(
+    flightplan_id: uuid.UUID,
+    min_distance_m: float = Query(default=DEFAULT_PLAN_TRACK_MIN_DISTANCE_M, ge=0),
+    session: Session = Depends(get_session),
+):
+    return get_flight_plan_track(session, flightplan_id, min_distance_m)
+
+@router.get("/{flightplan_id}/progress", response_model=FlightPlanProgressResponse)
+def fetch_flight_plan_progress(
+    flightplan_id: uuid.UUID,
+    session: Session = Depends(get_session),
+):
+    return get_flight_plan_progress(session, flightplan_id)
+
+@router.get("/{flightplan_id}/last-state", response_model=LastStateResponse)
+def fetch_flight_plan_last_state(
+    flightplan_id: uuid.UUID,
+    session: Session = Depends(get_session),
+):
+    return get_flight_plan_last_state(session, flightplan_id)
 
 @router.get("/{flightplan_id}/path", response_model=FlightPlanPathResponse)
 def fetch_flight_plan_path(
