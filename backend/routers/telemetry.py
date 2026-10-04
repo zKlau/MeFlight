@@ -1,11 +1,12 @@
 from datetime import timedelta
-from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from typing import Any, Dict, Optional
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
 from sqlmodel import Session, select
 from database import get_session
 from models.flight_telemetry import FlightTelemetry
 from schemas.telemetry import TrackResponse
 from security import verify_api_key
+from services.telemetry_payload import parse_telemetry
 from services.track_service import get_current_track
 
 router = APIRouter(tags=["Telemetry"])
@@ -30,9 +31,10 @@ MIN_DISTANCE_DESCRIPTION = "Drop points closer than this to the previous one"
     dependencies=[Depends(verify_api_key)],
 )
 def write_telemetry(
-    record: FlightTelemetry,
+    payload: Dict[str, Any] = Body(...),
     session: Session = Depends(get_session),
 ):
+    record = parse_telemetry(payload)
     if not record.status:
         record.status = "success"
     session.add(record)

@@ -1,11 +1,17 @@
 from datetime import datetime, timezone
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 import uuid
 from pydantic import ConfigDict, model_validator
+from sqlalchemy import JSON, Column, Index
 from sqlmodel import Field, SQLModel
+
+UUID_FIELDS = ("session_id", "flightplan_id")
 
 class FlightTelemetry(SQLModel, table=True):
     __tablename__ = "flight_telemetry"
+    __table_args__ = (
+        Index("ix_flight_telemetry_flightplan_id_created_at", "flightplan_id", "created_at"),
+    )
     model_config = ConfigDict(populate_by_name=True)
 
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -196,10 +202,39 @@ class FlightTelemetry(SQLModel, table=True):
         sa_column_kwargs={"name": "STATUS"},
     )
 
+    fuel_total_quantity: float = Field(
+        default=0.0,
+        alias="FUEL_TOTAL_QUANTITY",
+        sa_column_kwargs={"name": "FUEL_TOTAL_QUANTITY"},
+    )
+    fuel_tank_levels: Dict[str, float] = Field(
+        default_factory=dict,
+        alias="FUEL_TANK_LEVELS",
+        sa_column=Column("FUEL_TANK_LEVELS", JSON, nullable=False),
+    )
+    sim_on_ground: bool = Field(
+        default=False,
+        alias="SIM_ON_GROUND",
+        sa_column_kwargs={"name": "SIM_ON_GROUND"},
+    )
+    ground_velocity: float = Field(
+        default=0.0,
+        alias="GROUND_VELOCITY",
+        sa_column_kwargs={"name": "GROUND_VELOCITY"},
+    )
+    plane_heading_degrees_true: float = Field(
+        default=0.0,
+        alias="PLANE_HEADING_DEGREES_TRUE",
+        sa_column_kwargs={"name": "PLANE_HEADING_DEGREES_TRUE"},
+    )
+
     @model_validator(mode="before")
     @classmethod
     def normalize_input(cls, data: Any) -> Any:
-        if isinstance(data, dict):
-            return {k.lower(): v for k, v in data.items()}
-        return data
-    status: str = Field(sa_column_kwargs={"name": "STATUS"})
+        if not isinstance(data, dict):
+            return data
+        normalized = {k.lower(): v for k, v in data.items()}
+        for field_name in UUID_FIELDS:
+            if isinstance(normalized.get(field_name), str):
+                normalized[field_name] = uuid.UUID(normalized[field_name])
+        return normalized
