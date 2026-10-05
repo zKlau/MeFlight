@@ -43,6 +43,7 @@ input[type="checkbox"] {
 }
 
 #map {
+  position: relative;
   flex: 1;
   min-width: 0;
   margin: var(--page-gap);
@@ -50,15 +51,4 @@ input[type="checkbox"] {
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-}
-
-@media (max-width: 720px) {
-  body {
-    flex-direction: column-reverse;
-  }
-
-  #map {
-    min-height: 55vh;
-    margin: 12px;
-  }
 }

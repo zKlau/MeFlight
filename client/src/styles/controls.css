@@ -1,0 +1,37 @@
+.map-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: var(--color-panel);
+  color: var(--color-text);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: background 0.2s ease;
+}
+
+.map-button:hover {
+  background: var(--orange);
+}
+
+.map-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.map-button--menu,
+.drawer-backdrop,
+.drawer-close {
+  display: none;
+}
+
+.leaflet-bar a,
+.leaflet-touch .leaflet-bar a {
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+}

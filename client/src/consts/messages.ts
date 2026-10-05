@@ -9,6 +9,10 @@ export const LOG_MESSAGES = {
 
 export const UI_TEXT = {
   mapTitle: "Map",
+  openMenu: "Flights and progress",
+  closeMenu: "Close menu",
+  enterFullscreen: "Enter fullscreen",
+  exitFullscreen: "Exit fullscreen",
   followAircraft: "Follow aircraft",
   flownTrack: "Flown track",
   flightPlan: "Flight plan",

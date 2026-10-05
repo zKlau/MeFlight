@@ -27,6 +27,7 @@ export const PANEL_ROLES = {
   track: "track",
   plan: "plan",
   places: "places",
+  collapse: "collapse",
   fit: "fit",
   stats: "stats",
 };

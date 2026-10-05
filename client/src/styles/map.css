@@ -90,9 +90,39 @@
 }
 
 .flight-panel__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  cursor: pointer;
+}
+
+.flight-panel__title svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.flight-panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.flight-panel--collapsed .flight-panel__body {
+  display: none;
+}
+
+.flight-panel--collapsed .flight-panel__title svg {
+  transform: rotate(-90deg);
 }
 
 .flight-panel label {

@@ -147,13 +147,3 @@
   border-radius: var(--radius-small);
   background: var(--color-hairline);
 }
-
-@media (max-width: 720px) {
-  .sidebar {
-    width: 100%;
-    height: auto;
-    max-height: 45vh;
-    border-top: var(--border-width) solid var(--color-border);
-    border-right: none;
-  }
-}

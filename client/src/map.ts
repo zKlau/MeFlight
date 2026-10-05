@@ -1,5 +1,8 @@
 import L from "leaflet";
 import { createAircraftMarker } from "./aircraftMarker";
+import { ZOOM_CONTROL_POSITION } from "./consts/layout";
+import { createFullscreenButton } from "./controls/fullscreenButton";
+import { createMobileDrawer } from "./controls/mobileDrawer";
 import { isLiveTelemetryFresh } from "./utils/liveness";
 import { PROGRESS_REFRESH_MS } from "./consts/time";
 import { LOG_MESSAGES } from "./consts/messages";
@@ -19,7 +22,7 @@ let placeLabels: L.TileLayer;
 let followAircraft: boolean = true;
 
 const leafletMap = () => {
-  map = L.map("map").setView(flightData?.getPosition(), 13);
+  map = L.map("map", { zoomControl: false }).setView(flightData?.getPosition(), 13);
   addSatelliteTiles(map);
   placeLabels = addPlaceLabels(map);
 
@@ -30,6 +33,9 @@ const elementById = (id: string) => document.getElementById(id) as HTMLElement;
 
 export const MapSetup = () => {
   leafletMap();
+  createMobileDrawer(map);
+  createFullscreenButton(map);
+  L.control.zoom({ position: ZOOM_CONTROL_POSITION }).addTo(map);
 
   const aircraft = createAircraftMarker(map);
   const parked = createParkedMarker(map);

@@ -1,4 +1,6 @@
 import L from "leaflet";
+import { CHEVRON_ICON } from "./consts/icons";
+import { MOBILE_MEDIA_QUERY, PANEL_COLLAPSED_CLASS } from "./consts/layout";
 import { FIT_BOUNDS_PADDING_PX, FLIGHT_PANEL_POSITION, PANEL_ROLES } from "./consts/map";
 import { UI_TEXT } from "./consts/messages";
 import { ALTITUDE_BANDS } from "./consts/track";
@@ -15,14 +17,18 @@ const legend = () =>
   ).join("");
 
 const panelContent = () => `
-  <div class="flight-panel__title">${UI_TEXT.mapTitle}</div>
-  ${checkbox(PANEL_ROLES.follow, UI_TEXT.followAircraft)}
-  ${checkbox(PANEL_ROLES.track, UI_TEXT.flownTrack)}
-  ${checkbox(PANEL_ROLES.plan, UI_TEXT.flightPlan)}
-  ${checkbox(PANEL_ROLES.places, UI_TEXT.placeNames)}
-  <button type="button" class="button" data-role="${PANEL_ROLES.fit}">${UI_TEXT.showWholeFlight}</button>
-  <div class="flight-panel__stats" data-role="${PANEL_ROLES.stats}">${UI_TEXT.noTrack}</div>
-  <div class="flight-panel__legend">${legend()}</div>
+  <button type="button" class="flight-panel__title" data-role="${PANEL_ROLES.collapse}">
+    ${UI_TEXT.mapTitle}${CHEVRON_ICON}
+  </button>
+  <div class="flight-panel__body">
+    ${checkbox(PANEL_ROLES.follow, UI_TEXT.followAircraft)}
+    ${checkbox(PANEL_ROLES.track, UI_TEXT.flownTrack)}
+    ${checkbox(PANEL_ROLES.plan, UI_TEXT.flightPlan)}
+    ${checkbox(PANEL_ROLES.places, UI_TEXT.placeNames)}
+    <button type="button" class="button" data-role="${PANEL_ROLES.fit}">${UI_TEXT.showWholeFlight}</button>
+    <div class="flight-panel__stats" data-role="${PANEL_ROLES.stats}">${UI_TEXT.noTrack}</div>
+    <div class="flight-panel__legend">${legend()}</div>
+  </div>
 `;
 
 export const createFlightPanel = (
@@ -97,6 +103,10 @@ export const createFlightPanel = (
   map.on("resize", applyPendingFit);
 
   const fitWholeFlight = () => fitBounds(flightTrack.getBounds());
+
+  const collapseButton = element<HTMLButtonElement>(PANEL_ROLES.collapse);
+  container.classList.toggle(PANEL_COLLAPSED_CLASS, window.matchMedia(MOBILE_MEDIA_QUERY).matches);
+  collapseButton.addEventListener("click", () => container.classList.toggle(PANEL_COLLAPSED_CLASS));
 
   followInput.addEventListener("change", () => onFollowChange(followInput.checked));
   bindLayerToggle(PANEL_ROLES.track, flightTrack.trackLayer);

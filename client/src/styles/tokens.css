@@ -29,4 +29,6 @@
   --sidebar-width: 300px;
   --page-gap: 24px;
   --shadow: 0 2px 6px rgba(17, 17, 17, 0.6);
+  --z-backdrop: 1200;
+  --z-drawer: 1300;
 }
