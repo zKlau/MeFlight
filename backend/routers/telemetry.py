@@ -7,9 +7,15 @@ from models.flight_telemetry import FlightTelemetry
 from schemas.telemetry import TrackResponse
 from security import verify_api_key
 from services.telemetry_payload import parse_telemetry
+from services.result_cache import cached_for
 from services.track_service import get_current_track
 
 router = APIRouter(tags=["Telemetry"])
+
+LIVE_CACHE_SECONDS = 0.5
+LIVE_CACHE_KEY = "live"
+TRACK_CACHE_SECONDS = 5
+TRACK_CACHE_KEY = "latest-track"
 
 DEFAULT_MAX_GAP_MINUTES = 10
 DEFAULT_MIN_DISTANCE_M = 25
@@ -42,12 +48,15 @@ def write_telemetry(
     session.refresh(record)
     return record
 
+def _latest_record(session: Session) -> Optional[FlightTelemetry]:
+    statement = select(FlightTelemetry).order_by(FlightTelemetry.created_at.desc(), FlightTelemetry.id.desc()).limit(1)
+    return session.exec(statement).first()
+
 @router.get("/live", response_model=FlightTelemetry)
 def get_latest_telemetry(
     session: Session = Depends(get_session),
 ):
-    statement = select(FlightTelemetry).order_by(FlightTelemetry.created_at.desc()).limit(1)
-    latest = session.exec(statement).first()
+    latest = cached_for(LIVE_CACHE_SECONDS, LIVE_CACHE_KEY, lambda: _latest_record(session))
     if not latest:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -62,10 +71,14 @@ def get_track(
     max_records: int = Query(default=DEFAULT_MAX_RECORDS, gt=0, le=MAX_RECORDS_LIMIT),
     session: Session = Depends(get_session),
 ):
-    return get_current_track(
-        session,
-        max_gap=timedelta(minutes=max_gap_minutes),
-        min_distance_m=min_distance_m,
-        max_records=max_records,
+    return cached_for(
+        TRACK_CACHE_SECONDS,
+        (TRACK_CACHE_KEY, max_gap_minutes, min_distance_m, max_records),
+        lambda: get_current_track(
+            session,
+            max_gap=timedelta(minutes=max_gap_minutes),
+            min_distance_m=min_distance_m,
+            max_records=max_records,
+        ),
     )
 

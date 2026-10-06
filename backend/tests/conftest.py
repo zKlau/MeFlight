@@ -5,7 +5,7 @@ from sqlmodel import Session, SQLModel
 from database import get_session
 from main import app
 from fixtures import VALID_API_KEY, test_engine
-from services.countries_service import clear_countries_cache
+from services.result_cache import clear_result_cache
 
 def override_get_session():
     with Session(test_engine) as session:
@@ -16,7 +16,7 @@ app.dependency_overrides[get_session] = override_get_session
 @pytest.fixture(autouse=True)
 def setup_database():
     os.environ["API_KEY"] = VALID_API_KEY
-    clear_countries_cache()
+    clear_result_cache()
     SQLModel.metadata.create_all(test_engine)
     yield
     SQLModel.metadata.drop_all(test_engine)

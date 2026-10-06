@@ -11,6 +11,7 @@ class FlightTelemetry(SQLModel, table=True):
     __tablename__ = "flight_telemetry"
     __table_args__ = (
         Index("ix_flight_telemetry_flightplan_id_created_at", "flightplan_id", "created_at"),
+        Index("ix_flight_telemetry_created_at_id", "created_at", "id"),
     )
     model_config = ConfigDict(populate_by_name=True)
 

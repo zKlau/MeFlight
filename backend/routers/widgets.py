@@ -7,6 +7,7 @@ from schemas.widgets import LandingCreate, LandingRead, LandingsResponse, Locati
 from security import verify_api_key
 from services.landing_service import list_landings, record_landing
 from services.location_service import locate
+from services.result_cache import cached_for
 from services.session_service import current_session
 from services.weather_service import get_metar
 
@@ -17,6 +18,8 @@ MAX_LANDINGS_LIMIT = 100
 MAX_LATITUDE = 90
 MAX_LONGITUDE = 180
 ICAO_PATTERN = "^[A-Za-z0-9]{3,4}$"
+SESSION_CACHE_SECONDS = 5
+SESSION_CACHE_KEY = "session"
 
 @router.get("/location", response_model=LocationResponse)
 def get_location(
@@ -27,7 +30,7 @@ def get_location(
 
 @router.get("/session", response_model=SessionResponse)
 def get_current_session(session: Session = Depends(get_session)):
-    return current_session(session)
+    return cached_for(SESSION_CACHE_SECONDS, SESSION_CACHE_KEY, lambda: current_session(session))
 
 @router.post(
     "/landings",

@@ -10,6 +10,7 @@ from services.flight_state_service import get_flight_plan_last_state, get_flight
 from schemas.countries import CountriesResponse
 from services.countries_service import get_flight_plan_countries
 from services.progress_service import get_flight_plan_progress
+from services.result_cache import cached_until_new_telemetry
 from services.telemetry_payload import parse_telemetry
 from schemas.flight_plan import (
     FlightPlanRead,
@@ -32,6 +33,8 @@ from services.flight_plan_service import (
 router = APIRouter(prefix="/flightplans", tags=["Flight Plans"])
 
 DEFAULT_PLAN_TRACK_MIN_DISTANCE_M = 100
+PLAN_TRACK_CACHE_SCOPE = "plan-track"
+PROGRESS_CACHE_SCOPE = "progress"
 
 def _to_flight_plan_read(flight_plan) -> FlightPlanRead:
     waypoints = [WaypointRead.model_validate(wp) for wp in flight_plan.waypoints] if flight_plan.waypoints else []
@@ -157,14 +160,24 @@ def fetch_flight_plan_track(
     min_distance_m: float = Query(default=DEFAULT_PLAN_TRACK_MIN_DISTANCE_M, ge=0),
     session: Session = Depends(get_session),
 ):
-    return get_flight_plan_track(session, flightplan_id, min_distance_m)
+    return cached_until_new_telemetry(
+        session,
+        (PLAN_TRACK_CACHE_SCOPE, min_distance_m),
+        flightplan_id,
+        lambda: get_flight_plan_track(session, flightplan_id, min_distance_m),
+    )
 
 @router.get("/{flightplan_id}/progress", response_model=FlightPlanProgressResponse)
 def fetch_flight_plan_progress(
     flightplan_id: uuid.UUID,
     session: Session = Depends(get_session),
 ):
-    return get_flight_plan_progress(session, flightplan_id)
+    return cached_until_new_telemetry(
+        session,
+        PROGRESS_CACHE_SCOPE,
+        flightplan_id,
+        lambda: get_flight_plan_progress(session, flightplan_id),
+    )
 
 @router.get("/{flightplan_id}/countries", response_model=CountriesResponse)
 def fetch_flight_plan_countries(

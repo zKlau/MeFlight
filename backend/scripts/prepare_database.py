@@ -18,8 +18,9 @@ VERSION_TABLE = "alembic_version"
 TELEMETRY_TABLE = "flight_telemetry"
 BASELINE_REVISION = "7639d6c804ce"
 HEAD_REVISION = "head"
+HEAD_MARKER_INDEX = "ix_flight_telemetry_created_at_id"
 REVISION_MARKER_COLUMNS = (
-    ("AUTOPILOT_NAV1_LOCK", HEAD_REVISION),
+    ("AUTOPILOT_NAV1_LOCK", "b7e2c9d1f4a3"),
     ("FUEL_TANK_LEVELS", "a1f3c2d4e5b6"),
 )
 
@@ -40,6 +41,10 @@ def _unversioned_revision() -> str | None:
 
     if VERSION_TABLE in tables or TELEMETRY_TABLE not in tables:
         return None
+
+    indexes = {index["name"] for index in inspector.get_indexes(TELEMETRY_TABLE)}
+    if HEAD_MARKER_INDEX in indexes:
+        return HEAD_REVISION
 
     columns = {column["name"] for column in inspector.get_columns(TELEMETRY_TABLE)}
     for marker_column, revision in REVISION_MARKER_COLUMNS:
