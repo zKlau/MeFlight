@@ -13,11 +13,36 @@ export const WIDGET_TYPES = {
   map: "map",
   countries: "countries",
   countriesAll: "countries-all",
+  location: "location",
+  leg: "leg",
+  phase: "phase",
+  trip: "trip",
+  autopilot: "autopilot",
+  config: "config",
+  log: "log",
+  profile: "profile",
+  overview: "overview",
+  landing: "landing",
+  session: "session",
+  weather: "weather",
 } as const;
 
 export type WidgetType = (typeof WIDGET_TYPES)[keyof typeof WIDGET_TYPES];
 export type CountriesWidgetType = typeof WIDGET_TYPES.countries | typeof WIDGET_TYPES.countriesAll;
-export type ValueWidgetType = Exclude<WidgetType, typeof WIDGET_TYPES.strip | typeof WIDGET_TYPES.map | CountriesWidgetType>;
+export type ExtraWidgetType =
+  | typeof WIDGET_TYPES.location
+  | typeof WIDGET_TYPES.leg
+  | typeof WIDGET_TYPES.phase
+  | typeof WIDGET_TYPES.trip
+  | typeof WIDGET_TYPES.autopilot
+  | typeof WIDGET_TYPES.config
+  | typeof WIDGET_TYPES.log
+  | typeof WIDGET_TYPES.profile
+  | typeof WIDGET_TYPES.overview
+  | typeof WIDGET_TYPES.landing
+  | typeof WIDGET_TYPES.session
+  | typeof WIDGET_TYPES.weather;
+export type ValueWidgetType = Exclude<WidgetType, typeof WIDGET_TYPES.strip | typeof WIDGET_TYPES.map | CountriesWidgetType | ExtraWidgetType>;
 
 export const WIDGET_PARAMS = {
   type: "type",
@@ -75,26 +100,3 @@ export const WIDGET_TEXT = {
   landed: "landed",
   flownOver: "flown over",
 };
-
-export type WidgetCatalogEntry = {
-  type: WidgetType;
-  title: string;
-  description: string;
-  width: number;
-  height: number;
-};
-
-export const WIDGET_CATALOG: WidgetCatalogEntry[] = [
-  { type: WIDGET_TYPES.strip, title: "Flight strip", description: "Speed, altitude, heading, fuel and progress in one row.", width: 900, height: 110 },
-  { type: WIDGET_TYPES.map, title: "Mini map", description: "Follow-cam map with the plane, the flown track and the planned route.", width: 400, height: 300 },
-  { type: WIDGET_TYPES.countries, title: "Countries visited", description: "Countries on the selected trip with their flags, split into landed and flown over.", width: 420, height: 150 },
-  { type: WIDGET_TYPES.countriesAll, title: "Countries visited (all time)", description: "Every country across all your recorded flights.", width: 420, height: 150 },
-  { type: WIDGET_TYPES.progress, title: "Progress", description: "Completion of the flight plan with a progress bar.", width: 340, height: 150 },
-  { type: WIDGET_TYPES.timeLeft, title: "Time left", description: "Estimated time to the destination at the current ground speed, with ETA.", width: 300, height: 130 },
-  { type: WIDGET_TYPES.distance, title: "Distance left", description: "Remaining distance along the planned route.", width: 300, height: 130 },
-  { type: WIDGET_TYPES.next, title: "Next waypoint", description: "Next waypoint with distance and time to reach it.", width: 300, height: 130 },
-  { type: WIDGET_TYPES.speed, title: "Speed", description: "Indicated airspeed and ground speed.", width: 260, height: 130 },
-  { type: WIDGET_TYPES.altitude, title: "Altitude", description: "Altitude and vertical speed.", width: 260, height: 130 },
-  { type: WIDGET_TYPES.heading, title: "Heading", description: "Magnetic heading.", width: 220, height: 130 },
-  { type: WIDGET_TYPES.fuel, title: "Fuel", description: "Fuel remaining.", width: 220, height: 130 },
-];

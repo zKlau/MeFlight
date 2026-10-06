@@ -1,8 +1,8 @@
 import { FLAG_URL } from "../consts/countries";
 import { element } from "../sidebar/dom";
-import type { CountryVisit } from "../types";
+type FlagCountry = { code: string; name: string };
 
-export const flagImage = (country: CountryVisit, className: string) => {
+export const flagImage = (country: FlagCountry, className: string) => {
   const image = element("img", className);
   image.src = FLAG_URL(country.code);
   image.alt = country.code;

@@ -134,6 +134,11 @@ class FlightTelemetry(SQLModel, table=True):
         alias="AUTOPILOT_NAV_SELECTED",
         sa_column_kwargs={"name": "AUTOPILOT_NAV_SELECTED"},
     )
+    autopilot_nav1_lock: float = Field(
+        default=0.0,
+        alias="AUTOPILOT_NAV1_LOCK",
+        sa_column_kwargs={"name": "AUTOPILOT_NAV1_LOCK"},
+    )
     autopilot_pitch_hold: float = Field(
         default=0.0,
         alias="AUTOPILOT_PITCH_HOLD",

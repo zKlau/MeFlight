@@ -6,11 +6,10 @@ import {
   COPIED_FEEDBACK_MS,
   WIDE_WIDGET_MIN_WIDTH,
   FOLLOW_LIVE_PLAN,
-  WIDGET_CATALOG,
   WIDGET_PAGE,
   WIDGET_TEXT,
-  type WidgetCatalogEntry,
 } from "../consts/widgets";
+import { WIDGET_CATALOG, type WidgetCatalogEntry } from "../consts/widgetCatalog";
 import { element } from "../sidebar/dom";
 import type { FlightPlanSummary } from "../types";
 import { planTitle } from "../utils/format";

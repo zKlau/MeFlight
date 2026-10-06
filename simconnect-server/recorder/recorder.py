@@ -3,6 +3,7 @@ import uuid
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from recorder.api_client import ApiClient, ApiError
+from recorder.landings import LandingReporter
 from recorder.sim import Sim, SimNotConnected
 
 RECONNECT_DELAY_SECONDS = 3.0
@@ -21,6 +22,7 @@ class RecorderStatus:
     altitude: str | None = None
     fuel_percentage: float | None = None
     on_ground: bool | None = None
+    last_landing_fpm: float | None = None
 
 class Recorder:
     def __init__(self, sim: Sim, api: ApiClient, interval_seconds: float):
@@ -28,6 +30,7 @@ class Recorder:
         self._api = api
         self._interval = interval_seconds
         self._status = RecorderStatus()
+        self._landings = LandingReporter(sim, api)
         self._lock = threading.Lock()
         self._stop = threading.Event()
         self._thread = threading.Thread(target=self._run, daemon=True)
@@ -51,6 +54,7 @@ class Recorder:
             self._status.session_id = str(uuid.uuid4())
             self._status.pushed_count = 0
             self._status.last_error = None
+        self._landings.reset()
 
     def restore_fuel(self, tank_levels: dict) -> dict:
         return self._sim.set_tank_levels(tank_levels)
@@ -109,6 +113,14 @@ class Recorder:
             return
         self._api.push_telemetry(payload)
         self._mark_pushed()
+        self._report_landing(telemetry, payload)
+
+    def _report_landing(self, telemetry: dict, payload: dict) -> None:
+        rate_fpm = self._landings.observe(telemetry, payload["FLIGHTPLAN_ID"], payload["SESSION_ID"])
+        if rate_fpm is None:
+            return
+        with self._lock:
+            self._status.last_landing_fpm = round(rate_fpm)
 
     def _run(self) -> None:
         while not self._stop.is_set():

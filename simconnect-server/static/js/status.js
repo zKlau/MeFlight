@@ -24,6 +24,14 @@ const groundState = (onGround) => {
   return TEXT.airborne;
 };
 
+const landingText = (rate) => {
+  if (rate === null || rate === undefined) {
+    return orDash(null);
+  }
+
+  return `${rate} ${LABELS.feetPerMinute}`;
+};
+
 const lastPush = (status) => {
   if (!status.last_push_at) {
     return null;
@@ -55,6 +63,7 @@ const render = (status) => {
     [LABELS.state, orDash(groundState(status.on_ground))],
     [LABELS.pointsSent, String(status.pushed_count)],
     [LABELS.lastSent, orDash(lastPush(status))],
+    [LABELS.lastLanding, landingText(status.last_landing_fpm)],
   ]);
   statusError.textContent = orEmpty(status.last_error);
   startButton.disabled = status.recording;

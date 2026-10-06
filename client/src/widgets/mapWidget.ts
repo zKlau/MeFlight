@@ -8,7 +8,7 @@ import { isUnplacedPosition } from "../track/trackPoint";
 import { addSatelliteTiles } from "../utils/tiles";
 import type { WidgetParams } from "./params";
 
-const MAP_OPTIONS: L.MapOptions = {
+export const WIDGET_MAP_OPTIONS: L.MapOptions = {
   zoomControl: false,
   attributionControl: true,
   dragging: false,
@@ -27,7 +27,7 @@ const selectionFor = (plan: string) => {
 };
 
 export const startMapWidget = (root: HTMLElement, params: WidgetParams) => {
-  const map = L.map(root, MAP_OPTIONS).setView([0, 0], params.zoom);
+  const map = L.map(root, WIDGET_MAP_OPTIONS).setView([0, 0], params.zoom);
   addSatelliteTiles(map);
   map.attributionControl.setPrefix(false);
 

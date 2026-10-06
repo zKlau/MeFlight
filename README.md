@@ -56,6 +56,11 @@ Main endpoints (writes need the `X-API-Key` header):
 | `GET` | `/flightplans/{id}/last-state` | Last position, nearest airport and fuel tank levels |
 | `GET` | `/flightplans/{id}/countries` | Countries landed in and flown over on this plan |
 | `GET` | `/countries` | Countries landed in and flown over across all flights |
+| `GET` | `/location?lat=…&lon=…` | Country and nearest airport for a position |
+| `GET` | `/session` | Current flying session: start, distance and airborne time |
+| `POST` | `/landings` | Recorder reports a touchdown rate |
+| `GET` | `/landings` | Last and best landings (optionally `?flightplan_id=`) |
+| `GET` | `/weather/metar?ident=…` | Live METAR from aviationweather.gov (cached 10 minutes) |
 | `GET` | `/airports/names?idents=…` | Airport names for ICAO codes (map tooltips) |
 
 Tests: `pytest` from `backend/`.

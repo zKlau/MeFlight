@@ -4,6 +4,7 @@ export const LOG_MESSAGES = {
   flightPlanFetchFailed: "Could not load flight plan route",
   airportNamesFetchFailed: "Could not load airport names",
   countriesFetchFailed: "Could not load visited countries",
+  widgetFetchFailed: "Could not load widget data",
   progressFetchFailed: "Could not load flight plan progress",
   plansFetchFailed: "Could not load flight plans",
 };

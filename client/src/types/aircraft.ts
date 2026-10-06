@@ -14,6 +14,7 @@ export type AircraftTelemetry = {
   AUTOPILOT_HEADING_LOCK_DIR: number;
   AUTOPILOT_MASTER: number;
   AUTOPILOT_NAV_SELECTED: number;
+  AUTOPILOT_NAV1_LOCK?: number;
   AUTOPILOT_PITCH_HOLD: number;
   AUTOPILOT_PITCH_HOLD_REF: number;
   AUTOPILOT_VERTICAL_HOLD: number;

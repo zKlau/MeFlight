@@ -49,6 +49,8 @@ export const LABELS = {
   state: "State",
   pointsSent: "Points sent",
   lastSent: "Last sent",
+  lastLanding: "Last landing",
+  feetPerMinute: "fpm",
   parkedNear: "Parked near",
   lastSeen: "Last seen",
   progress: "Progress",

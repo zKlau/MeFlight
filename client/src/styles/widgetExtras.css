@@ -1,0 +1,148 @@
+.widget__extra {
+  overflow: hidden;
+  color: var(--color-muted);
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.widget__extra:empty {
+  display: none;
+}
+
+.widget--tone-good .widget__value {
+  color: var(--lime);
+}
+
+.widget--tone-ok .widget__value {
+  color: var(--light-gray);
+}
+
+.widget--tone-bad .widget__value {
+  color: var(--strong-red);
+}
+
+.widget__flag--inline {
+  width: 36px;
+  height: 24px;
+  margin: 0 12px 0 0;
+  vertical-align: -3px;
+}
+
+.widget--chips {
+  display: flex;
+  align-items: center;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.chip {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-small);
+  background: rgba(17, 17, 17, 0.6);
+  color: var(--color-muted);
+  transition: all 0.2s ease;
+}
+
+.chip__label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.chip__value {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.chip__value:empty {
+  display: none;
+}
+
+.chip--active {
+  border-color: var(--green);
+  background: rgba(13, 148, 136, 0.35);
+  color: var(--white);
+}
+
+.chip--active .chip__label {
+  color: var(--lime);
+}
+
+.widget--log {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stop-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stop-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.stop-row__ident {
+  min-width: 48px;
+  color: var(--orange);
+  font-size: 16px;
+}
+
+.stop-row__name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stop-row__date {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.widget--profile {
+  display: flex;
+  flex-direction: column;
+}
+
+.widget--profile .widget__value {
+  font-size: 26px;
+}
+
+.profile {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  margin-top: 6px;
+}
+
+.profile__area {
+  fill: rgba(184, 64, 36, 0.35);
+}
+
+.profile__line {
+  fill: none;
+  stroke: var(--orange);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}

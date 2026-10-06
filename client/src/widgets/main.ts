@@ -3,6 +3,7 @@ import "../styles/widget.css";
 import { WIDGET_TEXT, WIDGET_TYPES, type ValueWidgetType } from "../consts/widgets";
 import { createWidgetFeed, type WidgetContext } from "./dataFeed";
 import { startCountriesWidget } from "./countriesWidget";
+import { EXTRA_WIDGETS, isExtraWidget } from "./extra/registry";
 import { startMapWidget } from "./mapWidget";
 import { readWidgetParams, type WidgetParams } from "./params";
 import { createWidgetRenderer, prepareRoot } from "./render";
@@ -41,6 +42,13 @@ const start = (params: WidgetParams) => {
   if (params.type === WIDGET_TYPES.countries || params.type === WIDGET_TYPES.countriesAll) {
     prepareRoot(root, params, COUNTRIES_MODIFIER);
     startCountriesWidget(root, params, params.type === WIDGET_TYPES.countriesAll);
+    return;
+  }
+
+  if (isExtraWidget(params.type)) {
+    const widget = EXTRA_WIDGETS[params.type];
+    prepareRoot(root, params, widget.modifier);
+    widget.start(root, params);
     return;
   }
 

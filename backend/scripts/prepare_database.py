@@ -18,7 +18,10 @@ VERSION_TABLE = "alembic_version"
 TELEMETRY_TABLE = "flight_telemetry"
 BASELINE_REVISION = "7639d6c804ce"
 HEAD_REVISION = "head"
-HEAD_MARKER_COLUMN = "FUEL_TANK_LEVELS"
+REVISION_MARKER_COLUMNS = (
+    ("AUTOPILOT_NAV1_LOCK", HEAD_REVISION),
+    ("FUEL_TANK_LEVELS", "a1f3c2d4e5b6"),
+)
 
 def wait_for_database() -> None:
     for attempt in range(1, CONNECT_ATTEMPTS + 1):
@@ -39,8 +42,9 @@ def _unversioned_revision() -> str | None:
         return None
 
     columns = {column["name"] for column in inspector.get_columns(TELEMETRY_TABLE)}
-    if HEAD_MARKER_COLUMN in columns:
-        return HEAD_REVISION
+    for marker_column, revision in REVISION_MARKER_COLUMNS:
+        if marker_column in columns:
+            return revision
     return BASELINE_REVISION
 
 def migrate() -> None:

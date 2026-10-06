@@ -17,6 +17,7 @@ from routers.airports import router as airports_router
 from routers.countries import router as countries_router
 from routers.flight_plans import router as flight_plans_router
 from routers.telemetry import router as telemetry_router
+from routers.widgets import router as widgets_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -43,6 +44,7 @@ app.include_router(airports_router)
 app.include_router(countries_router)
 app.include_router(flight_plans_router)
 app.include_router(telemetry_router)
+app.include_router(widgets_router)
 
 @app.get("/")
 async def root():

@@ -65,5 +65,8 @@ class ApiClient:
     def progress(self, flightplan_id: str) -> dict:
         return self._request("GET", f"flightplans/{flightplan_id}/progress")
 
+    def post_landing(self, landing: dict) -> None:
+        self._request("POST", "landings", json.dumps(landing).encode("utf-8"), JSON_CONTENT_TYPE)
+
     def push_telemetry(self, telemetry: dict) -> None:
         self._request("POST", "live", json.dumps(telemetry).encode("utf-8"), JSON_CONTENT_TYPE)

@@ -9,6 +9,7 @@ from schemas.flight_plan import (
     FlightPlanRouteResponse,
     FlightPlanPathResponse,
 )
+from services.landing_service import delete_plan_landings
 from services.pln_parser import parse_msfs_pln
 
 def create_flight_plan_from_pln(
@@ -88,6 +89,7 @@ def delete_flight_plan(
     if not flight_plan:
         return False
     session.exec(delete(FlightTelemetry).where(FlightTelemetry.flightplan_id == flightplan_id))
+    delete_plan_landings(session, flightplan_id)
     session.delete(flight_plan)
     session.commit()
     return True

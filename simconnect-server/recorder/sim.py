@@ -3,6 +3,7 @@ from typing import Dict
 from recorder.telemetry import FUEL_TANKS, capacity_simvar, extract_telemetry, has_position
 
 REQUEST_CACHE_MS = 10
+TOUCHDOWN_VELOCITY_SIMVAR = (b"PLANE TOUCHDOWN NORMAL VELOCITY", b"Feet per second")
 SIM_QUIT_FLAG = 1
 
 class SimNotConnected(Exception):
@@ -13,6 +14,7 @@ class Sim:
         self._lock = threading.Lock()
         self._connection = None
         self._requests = None
+        self._touchdown_request = None
         self._tanks: tuple[str, ...] = ()
 
     @property
@@ -20,11 +22,12 @@ class Sim:
         return self._connection is not None and getattr(self._connection, "quit", 0) != SIM_QUIT_FLAG
 
     def connect(self) -> None:
-        from SimConnect import AircraftRequests, SimConnect
+        from SimConnect import AircraftRequests, Request, SimConnect
 
         with self._lock:
             self._connection = SimConnect()
             self._requests = AircraftRequests(self._connection, _time=REQUEST_CACHE_MS)
+            self._touchdown_request = Request(TOUCHDOWN_VELOCITY_SIMVAR, self._connection, _time=REQUEST_CACHE_MS)
             self._tanks = self._installed_tanks()
 
     def disconnect(self) -> None:
@@ -58,6 +61,11 @@ class Sim:
         if not has_position(telemetry):
             return None
         return telemetry
+
+    def read_touchdown_velocity(self) -> float:
+        self._ensure_connected()
+        with self._lock:
+            return self._touchdown_request.get() or 0.0
 
     def set_tank_levels(self, levels: Dict[str, float]) -> Dict[str, float]:
         self._ensure_connected()
