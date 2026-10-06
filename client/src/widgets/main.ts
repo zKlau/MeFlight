@@ -2,6 +2,7 @@ import "leaflet/dist/leaflet.css";
 import "../styles/widget.css";
 import { WIDGET_TEXT, WIDGET_TYPES, type ValueWidgetType } from "../consts/widgets";
 import { createWidgetFeed, type WidgetContext } from "./dataFeed";
+import { startCountriesWidget } from "./countriesWidget";
 import { startMapWidget } from "./mapWidget";
 import { readWidgetParams, type WidgetParams } from "./params";
 import { createWidgetRenderer, prepareRoot } from "./render";
@@ -10,6 +11,7 @@ import { STRIP_ITEMS, VALUE_WIDGETS, type WidgetView } from "./valueWidgets";
 const MAP_MODIFIER = "widget--map";
 const STRIP_MODIFIER = "widget--strip";
 const SINGLE_MODIFIER = "widget--single";
+const COUNTRIES_MODIFIER = "widget--countries";
 
 const root = document.getElementById("widget") as HTMLElement;
 
@@ -33,6 +35,12 @@ const start = (params: WidgetParams) => {
   if (params.type === WIDGET_TYPES.map) {
     prepareRoot(root, params, MAP_MODIFIER);
     startMapWidget(root, params);
+    return;
+  }
+
+  if (params.type === WIDGET_TYPES.countries || params.type === WIDGET_TYPES.countriesAll) {
+    prepareRoot(root, params, COUNTRIES_MODIFIER);
+    startCountriesWidget(root, params, params.type === WIDGET_TYPES.countriesAll);
     return;
   }
 

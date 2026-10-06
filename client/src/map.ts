@@ -10,6 +10,7 @@ import { createFlightPanel } from "./flightPanel";
 import { flightData } from "./liveFlightData";
 import { createParkedMarker } from "./parkedMarker";
 import { getSelection, isPlanSelection, onSelectionChange, select, selectionFromHash } from "./selection";
+import { createCountriesMenu } from "./sidebar/countriesMenu";
 import { createPlanList } from "./sidebar/planList";
 import { createProgressCard, type PlanDetails } from "./sidebar/progressCard";
 import { createFlightTrack } from "./track/flightTrack";
@@ -42,6 +43,7 @@ export const MapSetup = () => {
   const flightTrack = createFlightTrack(map);
   const planList = createPlanList(elementById("plan-list"));
   const progressCard = createProgressCard(elementById("progress-card"), planList);
+  createCountriesMenu(elementById("countries-menu") as HTMLDetailsElement, elementById("countries-count"), elementById("countries-body"));
   let parkedState: LastState | null = null;
   let latestLive: AircraftTelemetry | null = null;
 

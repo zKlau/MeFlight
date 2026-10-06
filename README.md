@@ -54,8 +54,14 @@ Main endpoints (writes need the `X-API-Key` header):
 | `GET` | `/flightplans/{id}/track` | Everything flown on this plan |
 | `GET` | `/flightplans/{id}/progress` | Completion, distance, deviation, airports visited |
 | `GET` | `/flightplans/{id}/last-state` | Last position, nearest airport and fuel tank levels |
+| `GET` | `/flightplans/{id}/countries` | Countries landed in and flown over on this plan |
+| `GET` | `/countries` | Countries landed in and flown over across all flights |
+| `GET` | `/airports/names?idents=…` | Airport names for ICAO codes (map tooltips) |
 
 Tests: `pytest` from `backend/`.
+
+Country borders come from [Natural Earth](https://www.naturalearthdata.com/) (public domain), stored in
+`backend/data/countries.geojson`.
 
 ## Recorder (`simconnect-server/`)
 

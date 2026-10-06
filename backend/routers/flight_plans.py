@@ -7,6 +7,8 @@ from models.flight_telemetry import FlightTelemetry
 from schemas.progress import FlightPlanProgressResponse
 from schemas.telemetry import LastStateResponse, TrackResponse
 from services.flight_state_service import get_flight_plan_last_state, get_flight_plan_track
+from schemas.countries import CountriesResponse
+from services.countries_service import get_flight_plan_countries
 from services.progress_service import get_flight_plan_progress
 from services.telemetry_payload import parse_telemetry
 from schemas.flight_plan import (
@@ -163,6 +165,13 @@ def fetch_flight_plan_progress(
     session: Session = Depends(get_session),
 ):
     return get_flight_plan_progress(session, flightplan_id)
+
+@router.get("/{flightplan_id}/countries", response_model=CountriesResponse)
+def fetch_flight_plan_countries(
+    flightplan_id: uuid.UUID,
+    session: Session = Depends(get_session),
+):
+    return get_flight_plan_countries(session, flightplan_id)
 
 @router.get("/{flightplan_id}/last-state", response_model=LastStateResponse)
 def fetch_flight_plan_last_state(

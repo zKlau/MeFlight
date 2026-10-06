@@ -3,6 +3,7 @@ export const LOG_MESSAGES = {
   trackFetchFailed: "Could not load flight track",
   flightPlanFetchFailed: "Could not load flight plan route",
   airportNamesFetchFailed: "Could not load airport names",
+  countriesFetchFailed: "Could not load visited countries",
   progressFetchFailed: "Could not load flight plan progress",
   plansFetchFailed: "Could not load flight plans",
 };

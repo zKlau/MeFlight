@@ -12,6 +12,7 @@ class Airport:
     name: str
     latitude: float
     longitude: float
+    country: str
 
 @dataclass(frozen=True)
 class NearbyAirport:
@@ -27,7 +28,13 @@ def _all_airports() -> List[Airport]:
         return []
 
     return [
-        Airport(ident=ident, name=info["name"], latitude=float(info["lat"]), longitude=float(info["lon"]))
+        Airport(
+            ident=ident,
+            name=info["name"],
+            latitude=float(info["lat"]),
+            longitude=float(info["lon"]),
+            country=info["country"],
+        )
         for ident, info in records.items()
     ]
 

@@ -68,3 +68,7 @@ def flight_plan_samples(session: Session, flightplan_id: uuid.UUID) -> List[Tele
         .order_by(FlightTelemetry.created_at.asc(), FlightTelemetry.id.asc())
     )
     return [sample for sample in _to_samples(session.exec(statement).all()) if sample.is_placed]
+
+def all_samples(session: Session) -> List[TelemetrySample]:
+    statement = _sample_statement().order_by(FlightTelemetry.created_at.asc(), FlightTelemetry.id.asc())
+    return [sample for sample in _to_samples(session.exec(statement).all()) if sample.is_placed]

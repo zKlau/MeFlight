@@ -14,6 +14,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import init_db
 from routers.airports import router as airports_router
+from routers.countries import router as countries_router
 from routers.flight_plans import router as flight_plans_router
 from routers.telemetry import router as telemetry_router
 
@@ -39,6 +40,7 @@ app.add_middleware(
 )
 
 app.include_router(airports_router)
+app.include_router(countries_router)
 app.include_router(flight_plans_router)
 app.include_router(telemetry_router)
 

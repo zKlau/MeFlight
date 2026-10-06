@@ -9,3 +9,4 @@ airportsdata
 uvicorn
 asyncpg
 asyncpg
+shapely
