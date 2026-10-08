@@ -4,10 +4,9 @@ sqlalchemy
 sqlmodel
 alembic
 psycopg2-binary
+psycopg[binary]
 python-multipart
 airportsdata
 uvicorn
 asyncpg
-asyncpg
 shapely
-psycopg
