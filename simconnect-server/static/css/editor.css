@@ -1,0 +1,143 @@
+.editor__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.editor__header h2 {
+  margin: 0;
+}
+
+.editor__header .actions {
+  margin-top: 0;
+}
+
+.editor__status {
+  flex: 1;
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+.editor__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.editor__map {
+  height: 520px;
+  overflow: hidden;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.editor__map--adding {
+  cursor: crosshair;
+}
+
+.editor__side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.editor-form__title {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.editor-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.editor-field {
+  font-size: 13px;
+}
+
+.editor-input {
+  min-height: 36px;
+  padding: 6px 8px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-small);
+  background: var(--color-background);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.editor-list {
+  position: relative;
+  height: 260px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  border-top: 1px solid var(--color-hairline);
+  list-style: none;
+}
+
+.editor-list__item {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 6px 8px;
+  border-radius: var(--radius-small);
+  cursor: pointer;
+}
+
+.editor-list__item:hover {
+  background: var(--color-hover);
+}
+
+.editor-list__item.selected {
+  background: var(--color-input);
+}
+
+.editor-list__index {
+  min-width: 28px;
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.editor-list__type {
+  margin-left: auto;
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.editor-point {
+  border: var(--border-width) solid var(--white);
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: var(--shadow);
+  cursor: grab;
+}
+
+.editor-point--selected {
+  background: var(--lime);
+  box-shadow: 0 0 0 3px rgba(8, 255, 0, 0.35);
+}
+
+.leaflet-container {
+  font-family: var(--font);
+}
+
+.leaflet-tooltip {
+  border: 1px solid var(--color-border);
+  background: var(--color-panel);
+  color: var(--color-text);
+}
+
+@media (max-width: 900px) {
+  .editor__body {
+    grid-template-columns: 1fr;
+  }
+
+  .editor__map {
+    height: 360px;
+  }
+}

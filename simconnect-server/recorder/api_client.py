@@ -65,6 +65,15 @@ class ApiClient:
     def progress(self, flightplan_id: str) -> dict:
         return self._request("GET", f"flightplans/{flightplan_id}/progress")
 
+    def flight_plan(self, flightplan_id: str) -> dict:
+        return self._request("GET", f"flightplans/{flightplan_id}")
+
+    def update_waypoints(self, flightplan_id: str, route: dict) -> dict:
+        return self._request("PUT", f"flightplans/{flightplan_id}/waypoints", json.dumps(route).encode("utf-8"), JSON_CONTENT_TYPE)
+
+    def airport(self, ident: str) -> dict:
+        return self._request("GET", f"airports/{ident}")
+
     def post_landing(self, landing: dict) -> None:
         self._request("POST", "landings", json.dumps(landing).encode("utf-8"), JSON_CONTENT_TYPE)
 

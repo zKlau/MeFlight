@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MeFlight Recorder</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="/static/style.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   </head>
   <body>
     <header class="topbar">
@@ -55,6 +57,26 @@
       <section class="card wide">
         <h2>Flight plans</h2>
         <ul class="plan-list" id="plan-list"></ul>
+      </section>
+
+      <section class="card wide">
+        <div class="editor__header">
+          <h2>Edit route</h2>
+          <span class="editor__status" id="editor-status"></span>
+          <div class="actions">
+            <button id="editor-add" disabled>Add point on map</button>
+            <button id="editor-discard" disabled>Discard</button>
+            <button id="editor-save" class="primary" disabled>Save route</button>
+          </div>
+        </div>
+        <p class="muted" id="editor-hint"></p>
+        <div class="editor__body" id="editor-body" hidden>
+          <div class="editor__map" id="editor-map"></div>
+          <div class="editor__side">
+            <div id="editor-form"></div>
+            <ol class="editor-list" id="editor-list"></ol>
+          </div>
+        </div>
       </section>
     </main>
 

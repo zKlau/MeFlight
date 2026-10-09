@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from recorder.api_client import ApiClient, ApiError
 from recorder.recorder import Recorder
+from recorder.route_editor_api import add_route_editor_routes
 from recorder.sim import SimNotConnected
 
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
@@ -74,6 +75,8 @@ def create_app(recorder: Recorder, api: ApiClient) -> FastAPI:
         except SimNotConnected as error:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=SIM_NOT_CONNECTED_DETAIL) from error
         return {"applied": applied}
+
+    add_route_editor_routes(app, api, _call)
 
     @app.post("/api/recording/start")
     def start_recording(body: StartRecordingRequest):

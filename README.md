@@ -51,6 +51,8 @@ Main endpoints (writes need the `X-API-Key` header):
 | `POST` | `/flightplans/upload` | Upload an MSFS `.PLN` |
 | `GET` | `/flightplans` | All flight plans |
 | `GET` | `/flightplans/{id}/route` | Planned route |
+| `PUT` | `/flightplans/{id}/waypoints` | Replace the route (used by the recorder's route editor) |
+| `GET` | `/airports/{ident}` | Airport name and coordinates for an ICAO code |
 | `GET` | `/flightplans/{id}/track` | Everything flown on this plan |
 | `GET` | `/flightplans/{id}/progress` | Completion, distance, deviation, airports visited |
 | `GET` | `/flightplans/{id}/last-state` | Last position, nearest airport and fuel tank levels |
@@ -89,6 +91,13 @@ Environment (`simconnect-server/.env`):
 | `API_KEY` | – | Same key as the backend |
 | `INTERVAL` | `1.0` | Seconds between samples |
 | `LOCAL_PORT` | `5050` | Port of the local recorder page |
+
+### Editing a route
+
+Select a plan and scroll to **Edit route**. Drag a point to move it, click the dashed route line to insert a point
+there, or use **Add point on map**. Clicking a point opens its details: rename it, change its type or coordinates,
+**Look up airport** to fill in an ICAO code's position, move it up or down, or delete it. **Save route** sends the
+changes to the backend; progress and the website update right away.
 
 ### Resuming a trip
 
