@@ -2,11 +2,13 @@ import { request } from "../api.js";
 import { FREE_FLIGHT_VALUE } from "../consts.js";
 import { byId } from "../dom.js";
 import { getSelectedPlanId, onPlanSelected } from "../state.js";
-import { EDITOR_ENDPOINTS, EDITOR_TEXT } from "./editorConsts.js";
+import { getCruiseSpeed, onCruiseSpeedChange, setCruiseSpeed } from "./cruiseSpeed.js";
+import { EDITOR_ENDPOINTS, EDITOR_TEXT, LEG_TEXT } from "./editorConsts.js";
 import { createEditorForm } from "./editorForm.js";
 import { createEditorList } from "./editorList.js";
 import { createEditorMap } from "./editorMap.js";
-import { normalizeLongitude } from "./geo.js";
+import { displayPositions, normalizeLongitude } from "./geo.js";
+import { formatDistance, formatTime, routeDistanceM, secondsAtSpeed } from "./legMath.js";
 import { createRouteModel } from "./routeModel.js";
 
 const status = byId("editor-status");
@@ -15,6 +17,18 @@ const body = byId("editor-body");
 const saveButton = byId("editor-save");
 const discardButton = byId("editor-discard");
 const addButton = byId("editor-add");
+const speedInput = byId("editor-speed");
+const summary = byId("editor-summary");
+
+const summaryText = (waypoints) => {
+  if (waypoints.length < 2) {
+    return "";
+  }
+
+  const meters = routeDistanceM(displayPositions(waypoints));
+  const speedKts = getCruiseSpeed();
+  return `${LEG_TEXT.route}: ${formatDistance(meters)} · ${formatTime(secondsAtSpeed(meters, speedKts))} ${LEG_TEXT.at} ${speedKts} ${LEG_TEXT.knots}`;
+};
 
 const toPayload = (waypoints) => ({
   waypoints: waypoints.map((waypoint) => ({ ...waypoint, longitude: normalizeLongitude(waypoint.longitude) })),
@@ -91,6 +105,18 @@ export const bindEditor = () => {
 
     load(planId);
   };
+
+  const updateSummary = () => {
+    summary.textContent = summaryText(model.state.waypoints);
+  };
+
+  speedInput.value = String(getCruiseSpeed());
+  speedInput.addEventListener("change", () => setCruiseSpeed(Number(speedInput.value)));
+  onCruiseSpeedChange((speedKts) => {
+    speedInput.value = String(speedKts);
+    updateSummary();
+  });
+  model.subscribe(updateSummary);
 
   model.subscribe((state) => {
     saveButton.disabled = !state.dirty;

@@ -25,6 +25,7 @@ export const startOverviewWidget = (root: HTMLElement, params: WidgetParams) => 
 
   const aircraft = createAircraftMarker(map);
   const flightTrack = createFlightTrack(map);
+  flightTrack.legLayer.remove();
   const followsLive = params.plan === FOLLOW_LIVE_PLAN;
   let shownSelection: string | null = null;
 

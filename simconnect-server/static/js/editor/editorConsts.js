@@ -52,3 +52,21 @@ export const EDITOR_TEXT = {
   addOnMap: "Add point on map",
   cancelAdd: "Cancel adding",
 };
+
+export const DEFAULT_CRUISE_SPEED_KTS = 100;
+export const MIN_CRUISE_SPEED_KTS = 30;
+export const MAX_CRUISE_SPEED_KTS = 1000;
+export const CRUISE_SPEED_STORAGE_KEY = "meflight.recorder.cruiseSpeedKts";
+export const METERS_PER_NM = 1852;
+export const METERS_PER_KM = 1000;
+export const LEG_LABEL_MIN_PX = 120;
+
+export const LEG_TEXT = {
+  nauticalMiles: "nm",
+  kilometers: "km",
+  knots: "kts",
+  hours: "h",
+  minutes: "m",
+  route: "Route",
+  at: "at",
+};

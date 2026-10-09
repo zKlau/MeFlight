@@ -10,6 +10,7 @@ import {
   TOOLTIP_OPTIONS,
 } from "./editorConsts.js";
 import { displayPositions } from "./geo.js";
+import { createLegLabels } from "./legLabels.js";
 
 const MARKER_CLASS = "editor-point";
 const POINT_Z_INDEX = 1000;
@@ -41,6 +42,7 @@ export const createEditorMap = (container, model) => {
   L.tileLayer(LABELS_URL, { maxZoom: MAX_ZOOM }).addTo(map);
 
   const layer = L.layerGroup().addTo(map);
+  const legs = createLegLabels(map);
   let addMode = false;
   let onAddModeChange = () => {};
 
@@ -106,6 +108,7 @@ export const createEditorMap = (container, model) => {
     const route = L.polyline(positions, ROUTE_STYLE).addTo(layer);
     route.on("click", (event) => insertOnRoute(event, positions));
     state.waypoints.forEach((waypoint, index) => createMarker(waypoint, positions[index], index).addTo(layer));
+    legs.draw(positions);
     revealSelection(state, positions);
   };
 

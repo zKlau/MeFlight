@@ -13,6 +13,7 @@ import {
 import { LOG_MESSAGES } from "../consts/messages";
 import type { FlightPlanRoutePoint, FlightPlanRouteResponse } from "../types";
 import { unwrapLongitudes } from "../utils/geo";
+import { createLegLabels } from "./legLabels";
 import { shiftPosition, WORLD_COPY_OFFSETS, type Position } from "../utils/worldCopies";
 
 const isAirport = (waypoint: FlightPlanRoutePoint) => waypoint.waypoint_type === AIRPORT_WAYPOINT_TYPE;
@@ -41,6 +42,7 @@ const waypointStyle = (waypoint: FlightPlanRoutePoint, visited: Set<number>) => 
 
 export const createFlightPlanLayer = (map: L.Map) => {
   const layer = L.featureGroup().addTo(map);
+  const legs = createLegLabels(map);
   const markers = new Map<FlightPlanRoutePoint, L.CircleMarker[]>();
   let bounds = L.latLngBounds([]);
   let flightPlanId: string | null = null;
@@ -62,6 +64,7 @@ export const createFlightPlanLayer = (map: L.Map) => {
 
     route.points.forEach((waypoint, index) => markers.set(waypoint, drawWaypoint(waypoint, positions[index])));
     bounds = L.latLngBounds(positions);
+    legs.draw(positions);
   };
 
   const applyAirportNames = (names: Record<string, string>) => {
@@ -100,6 +103,7 @@ export const createFlightPlanLayer = (map: L.Map) => {
     layer.clearLayers();
     markers.clear();
     bounds = L.latLngBounds([]);
+    legs.clear();
   };
 
   const show = async (id: string | null) => {
@@ -122,5 +126,5 @@ export const createFlightPlanLayer = (map: L.Map) => {
 
   const getBounds = () => L.latLngBounds(bounds.getSouthWest(), bounds.getNorthEast());
 
-  return { layer, show, markVisited, getBounds };
+  return { layer, legLayer: legs.layer, show, markVisited, getBounds };
 };

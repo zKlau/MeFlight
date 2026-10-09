@@ -144,6 +144,7 @@ export const createFlightTrack = (map: L.Map) => {
     markVisited: flightPlan.markVisited,
     trackLayer: trackLine.layer,
     planLayer: flightPlan.layer,
+    legLayer: flightPlan.legLayer,
   };
 };
 

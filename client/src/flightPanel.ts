@@ -2,10 +2,12 @@ import L from "leaflet";
 import { CHEVRON_ICON } from "./consts/icons";
 import { MOBILE_MEDIA_QUERY, PANEL_COLLAPSED_CLASS } from "./consts/layout";
 import { FIT_BOUNDS_PADDING_PX, FLIGHT_PANEL_POSITION, PANEL_ROLES } from "./consts/map";
+import { LEG_TEXT, MAX_CRUISE_SPEED_KTS, MIN_CRUISE_SPEED_KTS } from "./consts/legs";
 import { UI_TEXT } from "./consts/messages";
 import { ALTITUDE_BANDS } from "./consts/track";
 import type { FlightTrack } from "./track/flightTrack";
 import type { TrackStats } from "./types";
+import { getCruiseSpeed, onCruiseSpeedChange, setCruiseSpeed } from "./utils/cruiseSpeed";
 import { formatTrackStats } from "./utils/format";
 
 const checkbox = (role: string, label: string) =>
@@ -16,6 +18,16 @@ const legend = () =>
     (band) => `<div><span style="background:${band.color}"></span>${band.label}</div>`,
   ).join("");
 
+const CRUISE_SPEED_STEP_KTS = 10;
+
+const speedField = () => `
+  <label class="flight-panel__speed">
+    ${LEG_TEXT.cruiseSpeed}
+    <input type="number" data-role="${PANEL_ROLES.speed}" min="${MIN_CRUISE_SPEED_KTS}" max="${MAX_CRUISE_SPEED_KTS}" step="${CRUISE_SPEED_STEP_KTS}" value="${getCruiseSpeed()}" />
+    ${UI_TEXT.knotsUnit}
+  </label>
+`;
+
 const panelContent = () => `
   <button type="button" class="flight-panel__title" data-role="${PANEL_ROLES.collapse}">
     ${UI_TEXT.mapTitle}${CHEVRON_ICON}
@@ -25,6 +37,8 @@ const panelContent = () => `
     ${checkbox(PANEL_ROLES.track, UI_TEXT.flownTrack)}
     ${checkbox(PANEL_ROLES.plan, UI_TEXT.flightPlan)}
     ${checkbox(PANEL_ROLES.places, UI_TEXT.placeNames)}
+    ${checkbox(PANEL_ROLES.legs, LEG_TEXT.legLabels)}
+    ${speedField()}
     <button type="button" class="button" data-role="${PANEL_ROLES.fit}">${UI_TEXT.showWholeFlight}</button>
     <div class="flight-panel__stats" data-role="${PANEL_ROLES.stats}">${UI_TEXT.noTrack}</div>
     <div class="flight-panel__legend">${legend()}</div>
@@ -112,6 +126,13 @@ export const createFlightPanel = (
   bindLayerToggle(PANEL_ROLES.track, flightTrack.trackLayer);
   bindLayerToggle(PANEL_ROLES.plan, flightTrack.planLayer);
   bindLayerToggle(PANEL_ROLES.places, placeLabels);
+  bindLayerToggle(PANEL_ROLES.legs, flightTrack.legLayer);
+
+  const speedInput = element<HTMLInputElement>(PANEL_ROLES.speed);
+  speedInput.addEventListener("change", () => setCruiseSpeed(Number(speedInput.value)));
+  onCruiseSpeedChange((speedKts) => {
+    speedInput.value = String(speedKts);
+  });
   element<HTMLButtonElement>(PANEL_ROLES.fit).addEventListener("click", fitWholeFlight);
 
   L.DomEvent.disableClickPropagation(container);

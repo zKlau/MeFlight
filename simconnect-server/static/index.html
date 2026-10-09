@@ -63,6 +63,11 @@
         <div class="editor__header">
           <h2>Edit route</h2>
           <span class="editor__status" id="editor-status"></span>
+          <label class="editor__speed">
+            Cruise speed
+            <input type="number" class="editor-input" id="editor-speed" min="30" max="1000" step="10" />
+            kts
+          </label>
           <div class="actions">
             <button id="editor-add" disabled>Add point on map</button>
             <button id="editor-discard" disabled>Discard</button>
@@ -70,6 +75,7 @@
           </div>
         </div>
         <p class="muted" id="editor-hint"></p>
+        <p class="editor__summary" id="editor-summary"></p>
         <div class="editor__body" id="editor-body" hidden>
           <div class="editor__map" id="editor-map"></div>
           <div class="editor__side">

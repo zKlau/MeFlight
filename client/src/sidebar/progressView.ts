@@ -2,6 +2,11 @@ import { COORDINATE_DECIMALS, PERCENT_DECIMALS, RECENT_STOPS_LIMIT, SIDEBAR_TEXT
 import { ONE_SECOND_MS } from "../consts/time";
 import type { FlightPlanProgress, FlightPlanSummary, LastState } from "../types";
 import { formatDateTime, formatDuration, formatNm, formatRoute, planTitle } from "../utils/format";
+import { LEG_TEXT } from "../consts/legs";
+import { UI_TEXT } from "../consts/messages";
+import { METERS_PER_NM } from "../consts/track";
+import { getCruiseSpeed } from "../utils/cruiseSpeed";
+import { formatLegTime, secondsAtSpeed } from "../utils/legMath";
 import { definitionList, element } from "./dom";
 
 const UNKNOWN_WAYPOINT = "?";
@@ -73,9 +78,16 @@ const recentStops = (progress: FlightPlanProgress) => {
   return [element("h3", "", SIDEBAR_TEXT.recentStops), list];
 };
 
+const routeTime = (progress: FlightPlanProgress) => {
+  const speedKts = getCruiseSpeed();
+  const seconds = secondsAtSpeed(progress.planned_distance_nm * METERS_PER_NM, speedKts);
+  return `${formatLegTime(seconds)} ${LEG_TEXT.at} ${speedKts} ${UI_TEXT.knotsUnit}`;
+};
+
 const statistics = (plan: FlightPlanSummary, progress: FlightPlanProgress) =>
   definitionList([
     [SIDEBAR_TEXT.flown, `${formatNm(progress.flown_distance_nm)} / ${formatNm(progress.planned_distance_nm)} ${SIDEBAR_TEXT.planned}`],
+    [LEG_TEXT.routeTime, routeTime(progress)],
     [SIDEBAR_TEXT.airports, `${progress.airports_visited.length} / ${progress.airports_total} ${SIDEBAR_TEXT.visited}`],
     [SIDEBAR_TEXT.currentLeg, `${waypointIdent(plan, progress.current_leg_index)} → ${waypointIdent(plan, progress.current_leg_index + 1)}`],
     [SIDEBAR_TEXT.offRoute, `${SIDEBAR_TEXT.average} ${formatNm(progress.average_deviation_nm)} · ${SIDEBAR_TEXT.maximum} ${formatNm(progress.max_deviation_nm)}`],

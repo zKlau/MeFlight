@@ -33,6 +33,7 @@ export const startMapWidget = (root: HTMLElement, params: WidgetParams) => {
 
   const aircraft = createAircraftMarker(map);
   const flightTrack = createFlightTrack(map);
+  flightTrack.legLayer.remove();
   flightTrack.show(selectionFor(params.plan));
 
   flightData.subscribe((live) => {
