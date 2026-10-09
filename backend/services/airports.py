@@ -59,6 +59,9 @@ def nearest_airport(position: Coordinate) -> Optional[NearbyAirport]:
 def _airports_by_ident() -> Dict[str, Airport]:
     return {airport.ident: airport for airport in _all_airports()}
 
+def airport_by_ident(ident: str) -> Optional[Airport]:
+    return _airports_by_ident().get(ident.strip().upper())
+
 def airport_names(idents: List[str]) -> Dict[str, str]:
     airports = _airports_by_ident()
     return {ident: airports[ident].name for ident in idents if ident in airports}

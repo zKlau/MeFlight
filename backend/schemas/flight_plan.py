@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, List
 import uuid
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from models.flight_telemetry import FlightTelemetry
 
 class WaypointRead(BaseModel):
@@ -48,3 +48,19 @@ class FlightPlanPathResponse(BaseModel):
     coordinates: List[List[float]]
     telemetry: List[FlightTelemetry]
 
+
+class WaypointWrite(BaseModel):
+    identifier: str = Field(min_length=1, max_length=16)
+    waypoint_type: Optional[str] = Field(default=None, max_length=32)
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float
+    altitude: Optional[float] = None
+
+class WaypointsUpdate(BaseModel):
+    waypoints: List[WaypointWrite] = Field(min_length=2)
+
+class AirportRead(BaseModel):
+    ident: str
+    name: str
+    latitude: float
+    longitude: float

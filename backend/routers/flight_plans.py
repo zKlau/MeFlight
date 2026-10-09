@@ -11,12 +11,14 @@ from schemas.countries import CountriesResponse
 from services.countries_service import get_flight_plan_countries
 from services.progress_service import get_flight_plan_progress
 from services.result_cache import cached_until_new_telemetry
+from services.route_editing import replace_waypoints
 from services.telemetry_payload import parse_telemetry
 from schemas.flight_plan import (
     FlightPlanRead,
     FlightPlanRouteResponse,
     FlightPlanPathResponse,
     WaypointRead,
+    WaypointsUpdate,
 )
 from security import verify_api_key
 from services.flight_plan_service import (
@@ -125,6 +127,18 @@ def remove_flight_plan(
             detail=f"Flight plan with ID {flightplan_id} not found",
         )
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@router.put(
+    "/{flightplan_id}/waypoints",
+    response_model=FlightPlanRead,
+    dependencies=[Depends(verify_api_key)],
+)
+def update_flight_plan_waypoints(
+    flightplan_id: uuid.UUID,
+    payload: WaypointsUpdate,
+    session: Session = Depends(get_session),
+):
+    return _to_flight_plan_read(replace_waypoints(session, flightplan_id, payload.waypoints))
 
 @router.get("/{flightplan_id}/route", response_model=FlightPlanRouteResponse)
 @router.get("/{flightplan_id}/points", response_model=FlightPlanRouteResponse)
