@@ -33,3 +33,6 @@ export const PANEL_ROLES = {
   fit: "fit",
   stats: "stats",
 };
+
+export const MAP_PREFERENCES_STORAGE_KEY = "meflight.mapOptions";
+export const PANEL_COLLAPSED_PREFERENCE = "panelCollapsed";

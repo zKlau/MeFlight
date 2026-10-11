@@ -1,7 +1,7 @@
 import L from "leaflet";
 import { CHEVRON_ICON } from "./consts/icons";
 import { MOBILE_MEDIA_QUERY, PANEL_COLLAPSED_CLASS } from "./consts/layout";
-import { FIT_BOUNDS_PADDING_PX, FLIGHT_PANEL_POSITION, PANEL_ROLES } from "./consts/map";
+import { FIT_BOUNDS_PADDING_PX, FLIGHT_PANEL_POSITION, PANEL_COLLAPSED_PREFERENCE, PANEL_ROLES } from "./consts/map";
 import { LEG_TEXT, MAX_CRUISE_SPEED_KTS, MIN_CRUISE_SPEED_KTS } from "./consts/legs";
 import { UI_TEXT } from "./consts/messages";
 import { ALTITUDE_BANDS } from "./consts/track";
@@ -9,6 +9,7 @@ import type { FlightTrack } from "./track/flightTrack";
 import type { TrackStats } from "./types";
 import { getCruiseSpeed, onCruiseSpeedChange, setCruiseSpeed } from "./utils/cruiseSpeed";
 import { formatTrackStats } from "./utils/format";
+import { getPreference, setPreference } from "./utils/mapPreferences";
 
 const checkbox = (role: string, label: string) =>
   `<label><input type="checkbox" data-role="${role}" checked /> ${label}</label>`;
@@ -60,16 +61,23 @@ export const createFlightPanel = (
   const followInput = element<HTMLInputElement>(PANEL_ROLES.follow);
   const statsElement = element<HTMLDivElement>(PANEL_ROLES.stats);
 
+  const showLayer = (layer: L.Layer, visible: boolean) => {
+    if (visible) {
+      layer.addTo(map);
+      return;
+    }
+
+    layer.remove();
+  };
+
   const bindLayerToggle = (role: string, layer: L.Layer) => {
     const input = element<HTMLInputElement>(role);
+    input.checked = getPreference(role, true);
+    showLayer(layer, input.checked);
 
     input.addEventListener("change", () => {
-      if (input.checked) {
-        layer.addTo(map);
-        return;
-      }
-
-      layer.remove();
+      setPreference(role, input.checked);
+      showLayer(layer, input.checked);
     });
   };
 
@@ -119,8 +127,11 @@ export const createFlightPanel = (
   const fitWholeFlight = () => fitBounds(flightTrack.getBounds());
 
   const collapseButton = element<HTMLButtonElement>(PANEL_ROLES.collapse);
-  container.classList.toggle(PANEL_COLLAPSED_CLASS, window.matchMedia(MOBILE_MEDIA_QUERY).matches);
-  collapseButton.addEventListener("click", () => container.classList.toggle(PANEL_COLLAPSED_CLASS));
+  const startsCollapsed = getPreference(PANEL_COLLAPSED_PREFERENCE, window.matchMedia(MOBILE_MEDIA_QUERY).matches);
+  container.classList.toggle(PANEL_COLLAPSED_CLASS, startsCollapsed);
+  collapseButton.addEventListener("click", () => {
+    setPreference(PANEL_COLLAPSED_PREFERENCE, container.classList.toggle(PANEL_COLLAPSED_CLASS));
+  });
 
   followInput.addEventListener("change", () => onFollowChange(followInput.checked));
   bindLayerToggle(PANEL_ROLES.track, flightTrack.trackLayer);
