@@ -14,6 +14,7 @@
       <div class="pills">
         <span class="pill" id="sim-pill">MSFS: …</span>
         <span class="pill" id="recording-pill">Idle</span>
+        <button id="settings-button">Settings</button>
       </div>
     </header>
 
@@ -85,6 +86,28 @@
         </div>
       </section>
     </main>
+
+    <dialog class="settings" id="settings-dialog">
+      <form class="settings__form" id="settings-form" method="dialog">
+        <h2>Settings</h2>
+        <p class="muted" id="settings-intro"></p>
+        <label class="field">
+          Server URL
+          <input type="url" class="settings__input" id="settings-url" placeholder="https://api.example.com" required />
+        </label>
+        <label class="field">
+          API key
+          <input type="password" class="settings__input" id="settings-key" autocomplete="off" required />
+        </label>
+        <p class="settings__result" id="settings-result"></p>
+        <div class="actions">
+          <button type="button" id="settings-test">Test connection</button>
+          <button type="button" id="settings-cancel">Cancel</button>
+          <button type="submit" class="primary" id="settings-save">Save</button>
+        </div>
+        <p class="muted settings__version" id="settings-version"></p>
+      </form>
+    </dialog>
 
     <script type="module" src="/static/js/main.js"></script>
   </body>

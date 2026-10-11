@@ -1,0 +1,45 @@
+name: Build recorder exe
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: simconnect-server
+    env:
+      VERSION: ${{ github.event.release.tag_name || github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller==6.22.3
+
+      - name: Stamp version
+        run: echo "VERSION = \"$VERSION\"" > recorder/version.py
+
+      - name: Build exe
+        run: pyinstaller --noconfirm --clean meflight.spec
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MeFlight
+          path: simconnect-server/dist/MeFlight.exe
+
+      - name: Attach exe to release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$VERSION" dist/MeFlight.exe --clobber

@@ -17,6 +17,8 @@ export const ENDPOINTS = {
   restoreFuel: (id) => `/api/plans/${id}/restore-fuel`,
   startRecording: "/api/recording/start",
   stopRecording: "/api/recording/stop",
+  settings: "/api/settings",
+  testSettings: "/api/settings/test",
 };
 
 export const TEXT = {
@@ -40,6 +42,11 @@ export const TEXT = {
   onGround: "On ground",
   airborne: "Airborne",
   waypoints: "waypoints",
+  settingsWelcome: "Welcome to MeFlight! Enter the server URL and API key you were given to start recording.",
+  settingsEdit: "Where MeFlight sends your flights.",
+  testing: "Testing…",
+  saving: "Saving…",
+  version: "Version",
 };
 
 export const LABELS = {

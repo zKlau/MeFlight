@@ -1,15 +1,16 @@
 from contextlib import asynccontextmanager
-from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from recorder.api_client import ApiClient, ApiError
+from recorder.paths import resource_dir
 from recorder.recorder import Recorder
 from recorder.route_editor_api import add_route_editor_routes
+from recorder.settings_api import add_settings_routes
 from recorder.sim import SimNotConnected
 
-STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+STATIC_DIR = resource_dir() / "static"
 INDEX_FILE = STATIC_DIR / "index.html"
 SIM_NOT_CONNECTED_DETAIL = "MSFS is not connected. Load into a flight first."
 NO_SAVED_STATE_DETAIL = "This flight plan has no saved position yet."
@@ -77,6 +78,7 @@ def create_app(recorder: Recorder, api: ApiClient) -> FastAPI:
         return {"applied": applied}
 
     add_route_editor_routes(app, api, _call)
+    add_settings_routes(app, api)
 
     @app.post("/api/recording/start")
     def start_recording(body: StartRecordingRequest):

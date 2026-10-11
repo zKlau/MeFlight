@@ -72,8 +72,23 @@ Country borders come from [Natural Earth](https://www.naturalearthdata.com/) (pu
 
 ## Recorder (`simconnect-server/`)
 
-Runs on the PC with MSFS. It serves a local page where you upload plans, choose the active plan, start/stop
+Runs on the PC with MSFS. It opens the MeFlight window where you upload plans, choose the active plan, start/stop
 recording and restore the saved fuel when resuming.
+
+### For pilots
+
+1. Download `MeFlight.exe` from the latest [GitHub release](https://github.com/zKlau/MeFlight/releases/latest). It
+   is a single file and runs from any folder; nothing needs to be installed.
+2. Start it. On the first run it asks for the **Server URL** and **API key**; **Test connection** checks both before
+   saving. Change them later with the **Settings** button.
+
+Settings are stored in `%APPDATA%\MeFlight\settings.json` and logs in `%LOCALAPPDATA%\MeFlight\meflight.log`. The
+window needs the Microsoft Edge WebView2 Runtime, which ships with Windows 11 and up-to-date Windows 10.
+
+Because the exe is not code-signed yet, Windows SmartScreen may show "Windows protected your PC" on the first run:
+click **More info → Run anyway**.
+
+### Development
 
 ```bash
 cd simconnect-server
@@ -81,16 +96,31 @@ pip install -r requirements.txt
 python index.py
 ```
 
-Then open http://127.0.0.1:5050 (it opens automatically).
+`python index.py --browser` serves the page in your normal browser instead of the app window
+(http://127.0.0.1:5050).
 
-Environment (`simconnect-server/.env`):
+When there is no `settings.json` yet, the server URL and key are taken from `simconnect-server/.env` (source runs
+only; the exe ignores `.env` for these two):
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `API_BASE_URL` | `http://localhost:8000` | Backend URL (the old `API_ENDPOINT=.../live` still works) |
+| `API_BASE_URL` | – | Backend URL (the old `API_ENDPOINT=.../live` still works) |
 | `API_KEY` | – | Same key as the backend |
 | `INTERVAL` | `1.0` | Seconds between samples |
 | `LOCAL_PORT` | `5050` | Port of the local recorder page |
+
+### Building the exe
+
+```bash
+cd simconnect-server
+pip install -r requirements.txt pyinstaller
+pyinstaller --noconfirm --clean meflight.spec
+```
+
+The result is `simconnect-server/dist/MeFlight.exe`. Publishing a GitHub release runs
+`.github/workflows/recorder-release.yml`, which builds the exe with the release tag as its version and attaches it to
+the release. The workflow can also be started by hand from the Actions tab; the exe is then available as a build
+artifact.
 
 ### Editing a route
 

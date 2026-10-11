@@ -2,3 +2,4 @@ SimConnect==0.4.26
 python-dotenv
 fastapi
 uvicorn
+pywebview

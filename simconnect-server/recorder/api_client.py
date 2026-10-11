@@ -2,13 +2,15 @@ import json
 import urllib.error
 import urllib.request
 from typing import Any
-from recorder.config import Config
+from recorder.settings import Settings
 
 USER_AGENT = "MeFlight-Recorder/2.0"
 REQUEST_TIMEOUT_SECONDS = 10
 JSON_CONTENT_TYPE = "application/json"
 XML_CONTENT_TYPE = "application/xml"
 NOT_FOUND = 404
+NOT_CONFIGURED = 503
+NOT_CONFIGURED_MESSAGE = "MeFlight is not connected to a server yet. Open Settings to add the server URL and API key."
 
 class ApiError(Exception):
     def __init__(self, status: int, message: str):
@@ -16,23 +18,32 @@ class ApiError(Exception):
         self.status = status
 
 class ApiClient:
-    def __init__(self, config: Config):
-        self._base_url = config.api_base_url
-        self._api_key = config.api_key
+    def __init__(self, settings: Settings):
+        self._settings = settings
 
-    def _headers(self, content_type: str | None) -> dict:
+    @property
+    def settings(self) -> Settings:
+        return self._settings
+
+    def configure(self, settings: Settings) -> None:
+        self._settings = settings
+
+    def _headers(self, settings: Settings, content_type: str | None) -> dict:
         headers = {"User-Agent": USER_AGENT}
         if content_type:
             headers["Content-Type"] = content_type
-        if self._api_key:
-            headers["X-API-Key"] = self._api_key
+        if settings.api_key:
+            headers["X-API-Key"] = settings.api_key
         return headers
 
     def _request(self, method: str, path: str, body: bytes | None = None, content_type: str | None = None) -> Any:
+        settings = self._settings
+        if not settings.server_url:
+            raise ApiError(NOT_CONFIGURED, NOT_CONFIGURED_MESSAGE)
         request = urllib.request.Request(
-            f"{self._base_url}/{path}",
+            f"{settings.server_url}/{path}",
             data=body,
-            headers=self._headers(content_type),
+            headers=self._headers(settings, content_type),
             method=method,
         )
         try:
@@ -44,6 +55,9 @@ class ApiClient:
             raise ApiError(0, str(error.reason)) from error
 
         return json.loads(payload) if payload else None
+
+    def check_api_key(self) -> None:
+        self._request("GET", "auth/check")
 
     def list_flight_plans(self) -> list:
         return self._request("GET", "flightplans")
