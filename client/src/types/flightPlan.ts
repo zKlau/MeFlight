@@ -32,6 +32,9 @@ export type FlightPlanProgress = {
   airports_visited: VisitedAirport[];
   first_flown_at: string | null;
   last_flown_at: string | null;
+  fuel_burned_gallons: number;
+  fuel_gallons_per_nm: number;
+  fuel_gallons_per_hour: number;
 };
 
 export type NearestAirport = {

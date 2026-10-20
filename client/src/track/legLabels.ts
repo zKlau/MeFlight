@@ -2,6 +2,7 @@ import L from "leaflet";
 import { LEG_LABEL_MIN_PX, LEG_TEXT } from "../consts/legs";
 import { UI_TEXT } from "../consts/messages";
 import { getCruiseSpeed, onCruiseSpeedChange } from "../utils/cruiseSpeed";
+import { formatFuel, fuelForMeters, hasFuelRate, onFuelRateChange } from "../utils/fuelRate";
 import {
   formatLegDistance,
   formatLegTime,
@@ -22,10 +23,18 @@ type LegLabel = {
   end: LegPosition;
 };
 
+const fuelText = (meters: number) => {
+  if (!hasFuelRate()) {
+    return "";
+  }
+
+  return `${LEG_TEXT.separator}${formatFuel(fuelForMeters(meters))}`;
+};
+
 const labelHtml = (meters: number, angle: number) => `
   <div class="leg-label__inner" style="transform: translate(-50%, -50%) rotate(${angle}deg)">
     <span class="leg-label__distance">${formatLegDistance(meters, UI_TEXT.nauticalMilesUnit, LEG_TEXT.kilometers)}</span>
-    <span class="leg-label__time">${formatLegTime(secondsAtSpeed(meters, getCruiseSpeed()))}</span>
+    <span class="leg-label__time">${formatLegTime(secondsAtSpeed(meters, getCruiseSpeed()))}${fuelText(meters)}</span>
   </div>
 `;
 
@@ -82,6 +91,7 @@ export const createLegLabels = (map: L.Map) => {
   map.on("zoomend", updateVisibility);
   layer.on("add", updateVisibility);
   onCruiseSpeedChange(render);
+  onFuelRateChange(render);
 
   return { layer, draw, clear };
 };

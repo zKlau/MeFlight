@@ -24,3 +24,6 @@ class FlightPlanProgressResponse(BaseModel):
     airports_visited: List[VisitedAirport]
     first_flown_at: Optional[datetime] = None
     last_flown_at: Optional[datetime] = None
+    fuel_burned_gallons: float = 0.0
+    fuel_gallons_per_nm: float = 0.0
+    fuel_gallons_per_hour: float = 0.0

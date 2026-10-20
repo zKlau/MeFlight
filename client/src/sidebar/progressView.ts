@@ -5,7 +5,9 @@ import { formatDateTime, formatDuration, formatNm, formatRoute, planTitle } from
 import { LEG_TEXT } from "../consts/legs";
 import { UI_TEXT } from "../consts/messages";
 import { METERS_PER_NM } from "../consts/track";
+import { FUEL_PER_HOUR_DECIMALS, FUEL_PER_NM_DECIMALS, FUEL_TEXT, PERCENT } from "../consts/fuel";
 import { getCruiseSpeed } from "../utils/cruiseSpeed";
+import { formatFuel } from "../utils/fuelRate";
 import { formatLegTime, secondsAtSpeed } from "../utils/legMath";
 import { definitionList, element } from "./dom";
 
@@ -84,10 +86,31 @@ const routeTime = (progress: FlightPlanProgress) => {
   return `${formatLegTime(seconds)} ${LEG_TEXT.at} ${speedKts} ${UI_TEXT.knotsUnit}`;
 };
 
+const fuelBurn = (progress: FlightPlanProgress) => {
+  if (progress.fuel_gallons_per_nm <= 0) {
+    return FUEL_TEXT.learning;
+  }
+
+  const perHour = `${progress.fuel_gallons_per_hour.toFixed(FUEL_PER_HOUR_DECIMALS)} ${FUEL_TEXT.gallons}${FUEL_TEXT.perHour}`;
+  const perNm = `${progress.fuel_gallons_per_nm.toFixed(FUEL_PER_NM_DECIMALS)} ${FUEL_TEXT.gallons}${FUEL_TEXT.perNm}`;
+  return `${perHour} · ${perNm}`;
+};
+
+const fuelToFinish = (progress: FlightPlanProgress): [string, string][] => {
+  if (progress.fuel_gallons_per_nm <= 0) {
+    return [];
+  }
+
+  const remainingNm = progress.planned_distance_nm * (1 - progress.completion_percent / PERCENT);
+  return [[FUEL_TEXT.fuelToFinish, formatFuel(remainingNm * progress.fuel_gallons_per_nm)]];
+};
+
 const statistics = (plan: FlightPlanSummary, progress: FlightPlanProgress) =>
   definitionList([
     [SIDEBAR_TEXT.flown, `${formatNm(progress.flown_distance_nm)} / ${formatNm(progress.planned_distance_nm)} ${SIDEBAR_TEXT.planned}`],
     [LEG_TEXT.routeTime, routeTime(progress)],
+    [FUEL_TEXT.fuelBurn, fuelBurn(progress)],
+    ...fuelToFinish(progress),
     [SIDEBAR_TEXT.airports, `${progress.airports_visited.length} / ${progress.airports_total} ${SIDEBAR_TEXT.visited}`],
     [SIDEBAR_TEXT.currentLeg, `${waypointIdent(plan, progress.current_leg_index)} → ${waypointIdent(plan, progress.current_leg_index + 1)}`],
     [SIDEBAR_TEXT.offRoute, `${SIDEBAR_TEXT.average} ${formatNm(progress.average_deviation_nm)} · ${SIDEBAR_TEXT.maximum} ${formatNm(progress.max_deviation_nm)}`],

@@ -5,6 +5,7 @@ import { isPlanSelection } from "../selection";
 import type { FlightPlanProgress, LastState } from "../types";
 import type { PlanList } from "./planList";
 import { onCruiseSpeedChange } from "../utils/cruiseSpeed";
+import { setFuelPerNm } from "../utils/fuelRate";
 import { errorView, latestFlightView, progressView } from "./progressView";
 
 export type PlanDetails = {
@@ -35,10 +36,12 @@ export const createProgressCard = (container: HTMLElement, planList: PlanList) =
       }
 
       container.replaceChildren(...progressView(plan, details.progress, details.lastState));
+      setFuelPerNm(details.progress.fuel_gallons_per_nm);
       rendered = { planId, details };
       return details;
     } catch (error) {
       console.warn(LOG_MESSAGES.progressFetchFailed, error);
+      setFuelPerNm(0);
       container.replaceChildren(...errorView());
       return null;
     }
@@ -49,6 +52,7 @@ export const createProgressCard = (container: HTMLElement, planList: PlanList) =
 
     if (!isPlanSelection(selection)) {
       rendered = null;
+      setFuelPerNm(0);
       container.replaceChildren(...latestFlightView());
       return null;
     }

@@ -13,4 +13,5 @@ export const LEG_TEXT = {
   kilometers: "km",
   routeTime: "Route time",
   at: "at",
+  separator: " · ",
 };

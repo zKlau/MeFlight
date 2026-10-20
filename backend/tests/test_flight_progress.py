@@ -19,7 +19,7 @@ def _upload_plan(client) -> str:
 def _interpolate(start, end, fraction):
     return (start[0] + (end[0] - start[0]) * fraction, start[1] + (end[1] - start[1]) * fraction)
 
-def _record(plan_id, position, at, on_ground, altitude="5,000"):
+def _record(plan_id, position, at, on_ground, altitude="5,000", fuel=21.5):
     return FlightTelemetry(
         flightplan_id=uuid.UUID(plan_id),
         latitude=position[0],
@@ -28,7 +28,7 @@ def _record(plan_id, position, at, on_ground, altitude="5,000"):
         status="success",
         sim_on_ground=on_ground,
         fuel_percentage=39,
-        fuel_total_quantity=21.5,
+        fuel_total_quantity=fuel,
         fuel_tank_levels=TANKS,
         created_at=at,
     )
@@ -63,6 +63,28 @@ def test_progress_of_completed_plan(client):
     assert data["airborne_seconds"] == 61 * 60
     assert data["flown_distance_nm"] >= data["planned_distance_nm"] * 0.95
 
+def test_progress_reports_fuel_burn_from_flown_legs(client):
+    plan_id = _upload_plan(client)
+    records = [
+        _record(plan_id, EHAM, START, on_ground=True, altitude="0", fuel=40.0),
+        _record(plan_id, EHAM, START + timedelta(minutes=1), on_ground=True, altitude="0", fuel=30.0),
+    ]
+    clock = START + timedelta(minutes=1)
+    fuel = 30.0
+    for step in range(1, STEPS_PER_LEG + 1):
+        clock += timedelta(minutes=1)
+        fuel -= 0.2
+        records.append(_record(plan_id, _interpolate(EHAM, GORLO, step / STEPS_PER_LEG), clock, on_ground=False, fuel=fuel))
+    with Session(test_engine) as session:
+        session.add_all(records)
+        session.commit()
+
+    data = client.get(f"/flightplans/{plan_id}/progress").json()
+
+    assert abs(data["fuel_burned_gallons"] - 6.0) < 0.01
+    assert abs(data["fuel_gallons_per_hour"] - 12.0) < 0.1
+    assert abs(data["fuel_gallons_per_nm"] * data["flown_distance_nm"] - 6.0) < 0.2
+
 def test_progress_without_telemetry(client):
     plan_id = _upload_plan(client)
 
@@ -71,6 +93,7 @@ def test_progress_without_telemetry(client):
     assert data["completion_percent"] == 0
     assert data["airports_visited"] == []
     assert data["planned_distance_nm"] > 0
+    assert data["fuel_gallons_per_nm"] == 0
 
 def test_last_state_reports_parking_and_fuel(client):
     plan_id = _upload_plan(client)

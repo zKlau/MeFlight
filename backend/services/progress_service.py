@@ -5,6 +5,7 @@ from sqlmodel import Session
 from models.flight_plan import FlightPlanWaypoint
 from schemas.progress import FlightPlanProgressResponse, VisitedAirport
 from services.flight_plan_service import get_flight_plan_or_404
+from services.fuel_usage import fuel_usage
 from services.geo import Coordinate, haversine_m, meters_to_nm
 from services.route_following import follow_route, leg_lengths_m
 from services.telemetry_samples import TelemetrySample, flight_plan_samples
@@ -68,6 +69,7 @@ def get_flight_plan_progress(session: Session, flightplan_id: uuid.UUID) -> Flig
     thinned = thin_out(samples, PROGRESS_MIN_DISTANCE_M)
     following = follow_route(route, thinned)
     deviations = following.deviations_m
+    fuel = fuel_usage(samples)
 
     return FlightPlanProgressResponse(
         flightplan_id=flightplan_id,
@@ -85,4 +87,7 @@ def get_flight_plan_progress(session: Session, flightplan_id: uuid.UUID) -> Flig
         airports_visited=_visited_airports(waypoints, thinned),
         first_flown_at=samples[0].created_at if samples else None,
         last_flown_at=samples[-1].created_at if samples else None,
+        fuel_burned_gallons=fuel.burned_gallons,
+        fuel_gallons_per_nm=fuel.gallons_per_nm,
+        fuel_gallons_per_hour=fuel.gallons_per_hour,
     )

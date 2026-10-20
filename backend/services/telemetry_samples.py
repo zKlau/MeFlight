@@ -20,6 +20,7 @@ class TelemetrySample:
     airspeed: float
     heading: float
     on_ground: bool
+    fuel_quantity: float
 
     @property
     def position(self) -> Coordinate:
@@ -48,6 +49,7 @@ def _sample_statement():
         FlightTelemetry.airspeed_indicate,
         FlightTelemetry.magnetic_compass,
         FlightTelemetry.sim_on_ground,
+        FlightTelemetry.fuel_total_quantity,
     )
 
 def _to_samples(rows) -> List[TelemetrySample]:
