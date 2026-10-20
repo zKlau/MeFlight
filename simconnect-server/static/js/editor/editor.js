@@ -19,6 +19,7 @@ const discardButton = byId("editor-discard");
 const addButton = byId("editor-add");
 const speedInput = byId("editor-speed");
 const summary = byId("editor-summary");
+const EDIT_PANEL_ID = "edit-panel";
 
 const summaryText = (waypoints) => {
   if (waypoints.length < 2) {
@@ -143,4 +144,6 @@ export const bindEditor = () => {
   discardButton.addEventListener("click", discard);
   onPlanSelected(changePlan);
   load(getSelectedPlanId());
+
+  return { panelId: EDIT_PANEL_ID, mount: map.mount, unmount: map.unmount };
 };

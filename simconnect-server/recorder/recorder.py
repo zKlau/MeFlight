@@ -22,6 +22,8 @@ class RecorderStatus:
     altitude: str | None = None
     fuel_percentage: float | None = None
     on_ground: bool | None = None
+    heading: float | None = None
+    ground_speed: float | None = None
     last_landing_fpm: float | None = None
 
 class Recorder:
@@ -86,6 +88,8 @@ class Recorder:
             self._status.altitude = telemetry["ALTITUDE"]
             self._status.fuel_percentage = telemetry["FUEL_PERCENTAGE"]
             self._status.on_ground = telemetry["SIM_ON_GROUND"]
+            self._status.heading = telemetry["PLANE_HEADING_DEGREES_TRUE"]
+            self._status.ground_speed = telemetry["GROUND_VELOCITY"]
 
     def _payload(self, telemetry: dict) -> dict | None:
         with self._lock:

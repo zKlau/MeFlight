@@ -54,7 +54,7 @@ export const createLegLabels = (map) => {
   };
 
   map.on("zoomend", updateVisibility);
-  onCruiseSpeedChange(render);
+  const stopListening = onCruiseSpeedChange(render);
 
-  return { draw };
+  return { draw, destroy: stopListening };
 };

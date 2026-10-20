@@ -15,16 +15,6 @@ export const FULL_CIRCLE_DEGREES = 360;
 export const NEW_POINT_OFFSET_DEGREES = 0.2;
 export const SEGMENT_HIT_TOLERANCE_PX = 12;
 
-export const TILE_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
-export const LABELS_URL =
-  "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}";
-export const TILE_ATTRIBUTION = "&copy; Esri";
-export const MAX_ZOOM = 18;
-export const DEFAULT_VIEW = { center: [45, 10], zoom: 3 };
-export const FIT_PADDING_PX = 30;
-
-export const ROUTE_STYLE = { color: "#ffffff", weight: 3, opacity: 0.85, dashArray: "8 6" };
-export const TOOLTIP_OPTIONS = { direction: "top", offset: [0, -8] };
 
 export const EDITOR_TEXT = {
   noPlan: "Select a flight plan to edit its route.",

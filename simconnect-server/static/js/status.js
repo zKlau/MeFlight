@@ -11,6 +11,15 @@ const statusError = byId("status-error");
 const planSelect = byId("plan-select");
 const startButton = byId("start-button");
 const stopButton = byId("stop-button");
+const statusListeners = new Set();
+let lastStatus = null;
+
+export const getLastStatus = () => lastStatus;
+
+export const onStatus = (listener) => {
+  statusListeners.add(listener);
+  return () => statusListeners.delete(listener);
+};
 
 const groundState = (onGround) => {
   if (onGround === null) {
@@ -69,6 +78,8 @@ const render = (status) => {
   startButton.disabled = status.recording;
   stopButton.disabled = !status.recording;
   planSelect.disabled = status.recording;
+  lastStatus = status;
+  statusListeners.forEach((listener) => listener(status));
 };
 
 const selectedPlanOrNull = () => {

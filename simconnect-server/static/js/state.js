@@ -12,4 +12,5 @@ export const selectPlan = (planId) => {
 
 export const onPlanSelected = (listener) => {
   listeners.add(listener);
+  return () => listeners.delete(listener);
 };

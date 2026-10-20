@@ -49,4 +49,7 @@ export const setCruiseSpeed = (speedKts) => {
   listeners.forEach((listener) => listener(current));
 };
 
-export const onCruiseSpeedChange = (listener) => listeners.add(listener);
+export const onCruiseSpeedChange = (listener) => {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+};

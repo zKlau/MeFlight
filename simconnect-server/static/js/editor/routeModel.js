@@ -86,7 +86,10 @@ export const createRouteModel = () => {
     notify();
   };
 
-  const subscribe = (listener) => listeners.add(listener);
+  const subscribe = (listener) => {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+  };
 
   return { state, load, clear, select, update, insert, remove, swap, markSaved, subscribe };
 };

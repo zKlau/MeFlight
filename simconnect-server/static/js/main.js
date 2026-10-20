@@ -1,5 +1,7 @@
 import { STATUS_POLL_MS } from "./consts.js";
 import { bindEditor } from "./editor/editor.js";
+import { bindLiveMap } from "./live/liveMap.js";
+import { bindMapTabs } from "./map/mapTabs.js";
 import { bindPlans, loadPlans } from "./plans.js";
 import { bindResume } from "./resume.js";
 import { bindSettings } from "./settings.js";
@@ -11,5 +13,5 @@ bindRecordingButtons();
 loadPlans();
 refreshStatus();
 setInterval(refreshStatus, STATUS_POLL_MS);
-bindEditor();
+bindMapTabs({ live: bindLiveMap(), edit: bindEditor() });
 bindSettings();

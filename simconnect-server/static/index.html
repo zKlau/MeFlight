@@ -61,27 +61,44 @@
       </section>
 
       <section class="card wide">
-        <div class="editor__header">
-          <h2>Edit route</h2>
-          <span class="editor__status" id="editor-status"></span>
-          <label class="editor__speed">
-            Cruise speed
-            <input type="number" class="editor-input" id="editor-speed" min="30" max="1000" step="10" />
-            kts
-          </label>
-          <div class="actions">
-            <button id="editor-add" disabled>Add point on map</button>
-            <button id="editor-discard" disabled>Discard</button>
-            <button id="editor-save" class="primary" disabled>Save route</button>
-          </div>
+        <div class="map-tabs" role="tablist" aria-label="Map">
+          <button type="button" role="tab" class="map-tab" data-map-tab="live">Live flight</button>
+          <button type="button" role="tab" class="map-tab" data-map-tab="edit">Edit route</button>
         </div>
-        <p class="muted" id="editor-hint"></p>
-        <p class="editor__summary" id="editor-summary"></p>
-        <div class="editor__body" id="editor-body" hidden>
-          <div class="editor__map" id="editor-map"></div>
-          <div class="editor__side">
-            <div id="editor-form"></div>
-            <ol class="editor-list" id="editor-list"></ol>
+
+        <div class="map-panel" id="live-panel" role="tabpanel" hidden>
+          <div class="editor__header">
+            <span class="editor__status" id="live-status"></span>
+            <label class="live__follow">
+              <input type="checkbox" id="live-follow" />
+              Follow aircraft
+            </label>
+          </div>
+          <div class="editor__map live__map" id="live-map"></div>
+        </div>
+
+        <div class="map-panel" id="edit-panel" role="tabpanel" hidden>
+          <div class="editor__header">
+            <span class="editor__status" id="editor-status"></span>
+            <label class="editor__speed">
+              Cruise speed
+              <input type="number" class="editor-input" id="editor-speed" min="30" max="1000" step="10" />
+              kts
+            </label>
+            <div class="actions">
+              <button id="editor-add" disabled>Add point on map</button>
+              <button id="editor-discard" disabled>Discard</button>
+              <button id="editor-save" class="primary" disabled>Save route</button>
+            </div>
+          </div>
+          <p class="muted" id="editor-hint"></p>
+          <p class="editor__summary" id="editor-summary"></p>
+          <div class="editor__body" id="editor-body" hidden>
+            <div class="editor__map" id="editor-map"></div>
+            <div class="editor__side">
+              <div id="editor-form"></div>
+              <ol class="editor-list" id="editor-list"></ol>
+            </div>
           </div>
         </div>
       </section>

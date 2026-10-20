@@ -80,3 +80,7 @@ h2 {
   margin: 0;
   font-weight: 500;
 }
+
+[hidden] {
+  display: none !important;
+}
