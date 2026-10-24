@@ -7,6 +7,7 @@ export const LOG_MESSAGES = {
   widgetFetchFailed: "Could not load widget data",
   progressFetchFailed: "Could not load flight plan progress",
   plansFetchFailed: "Could not load flight plans",
+  runwaysFetchFailed: "Could not load runways",
 };
 
 export const UI_TEXT = {

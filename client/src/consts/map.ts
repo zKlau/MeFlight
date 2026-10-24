@@ -28,6 +28,7 @@ export const PANEL_ROLES = {
   plan: "plan",
   places: "places",
   legs: "legs",
+  runways: "runways",
   speed: "speed",
   collapse: "collapse",
   fit: "fit",

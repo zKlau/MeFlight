@@ -4,6 +4,7 @@ import { MOBILE_MEDIA_QUERY, PANEL_COLLAPSED_CLASS } from "./consts/layout";
 import { FIT_BOUNDS_PADDING_PX, FLIGHT_PANEL_POSITION, PANEL_COLLAPSED_PREFERENCE, PANEL_ROLES } from "./consts/map";
 import { LEG_TEXT, MAX_CRUISE_SPEED_KTS, MIN_CRUISE_SPEED_KTS } from "./consts/legs";
 import { UI_TEXT } from "./consts/messages";
+import { RUNWAY_TEXT, RUNWAYS_PREFERENCE_DEFAULT } from "./consts/runways";
 import { ALTITUDE_BANDS } from "./consts/track";
 import type { FlightTrack } from "./track/flightTrack";
 import type { TrackStats } from "./types";
@@ -39,6 +40,7 @@ const panelContent = () => `
     ${checkbox(PANEL_ROLES.plan, UI_TEXT.flightPlan)}
     ${checkbox(PANEL_ROLES.places, UI_TEXT.placeNames)}
     ${checkbox(PANEL_ROLES.legs, LEG_TEXT.legLabels)}
+    ${checkbox(PANEL_ROLES.runways, RUNWAY_TEXT.runways)}
     ${speedField()}
     <button type="button" class="button" data-role="${PANEL_ROLES.fit}">${UI_TEXT.showWholeFlight}</button>
     <div class="flight-panel__stats" data-role="${PANEL_ROLES.stats}">${UI_TEXT.noTrack}</div>
@@ -50,6 +52,7 @@ export const createFlightPanel = (
   map: L.Map,
   flightTrack: FlightTrack,
   placeLabels: L.Layer,
+  runwayLayer: L.Layer,
   onFollowChange: (follow: boolean) => void,
 ) => {
   const container = L.DomUtil.create("div", "flight-panel");
@@ -70,9 +73,9 @@ export const createFlightPanel = (
     layer.remove();
   };
 
-  const bindLayerToggle = (role: string, layer: L.Layer) => {
+  const bindLayerToggle = (role: string, layer: L.Layer, visibleByDefault = true) => {
     const input = element<HTMLInputElement>(role);
-    input.checked = getPreference(role, true);
+    input.checked = getPreference(role, visibleByDefault);
     showLayer(layer, input.checked);
 
     input.addEventListener("change", () => {
@@ -138,6 +141,7 @@ export const createFlightPanel = (
   bindLayerToggle(PANEL_ROLES.plan, flightTrack.planLayer);
   bindLayerToggle(PANEL_ROLES.places, placeLabels);
   bindLayerToggle(PANEL_ROLES.legs, flightTrack.legLayer);
+  bindLayerToggle(PANEL_ROLES.runways, runwayLayer, RUNWAYS_PREFERENCE_DEFAULT);
 
   const speedInput = element<HTMLInputElement>(PANEL_ROLES.speed);
   speedInput.addEventListener("change", () => setCruiseSpeed(Number(speedInput.value)));

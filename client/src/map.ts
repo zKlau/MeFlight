@@ -12,6 +12,7 @@ import { createParkedMarker } from "./parkedMarker";
 import { getSelection, isPlanSelection, onSelectionChange, select, selectionFromHash } from "./selection";
 import { createCountriesMenu } from "./sidebar/countriesMenu";
 import { createPlanList } from "./sidebar/planList";
+import { createRunwayLayer } from "./runways/runwayLayer";
 import { createProgressCard, type PlanDetails } from "./sidebar/progressCard";
 import { createFlightTrack } from "./track/flightTrack";
 import { flightPlanIdOf, isUnplacedPosition } from "./track/trackPoint";
@@ -56,7 +57,7 @@ export const MapSetup = () => {
     }
   };
 
-  const panel = createFlightPanel(map, flightTrack, placeLabels, setFollow);
+  const panel = createFlightPanel(map, flightTrack, placeLabels, createRunwayLayer(map), setFollow);
   flightTrack.onStatsChange(panel.setStats);
   map.on("dragstart", () => setFollow(false));
 
